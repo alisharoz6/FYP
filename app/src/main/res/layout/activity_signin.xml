@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBackground">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/splashScreen"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:padding="@dimen/_15sdp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_add_alert_black_24dp"
+                    android:background="@drawable/round_background"
+                    android:layout_gravity="center"
+                    />
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Watch Out"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/_5sdp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:gravity="bottom">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/color_red"
+                    android:layout_gravity="bottom">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="bottom"
+                        android:layout_margin="@dimen/_10sdp"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Email:"
+                                android:textColor="@color/white"
+                                android:layout_marginBottom="@dimen/_5sdp"/>
+                            <EditText
+                                android:id="@+id/et_email"
+                                android:layout_width="match_parent"
+                                android:hint="Enter Email Address"
+                                android:layout_height="@dimen/_30sdp"
+                                android:textColor="#000"
+                                android:textColorHint="#000"
+                                android:textAlignment="center"
+                                android:background="@drawable/round_edges_white"
+                                android:singleLine="true"
+                                android:imeOptions="actionNext"
+                                android:inputType="textEmailAddress"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            >
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Password:"
+                                android:textColor="@color/white"
+                                android:layout_marginBottom="@dimen/_5sdp"/>
+                            <EditText
+                                android:id="@+id/et_password"
+                                android:layout_width="match_parent"
+                                android:hint="Enter Password"
+                                android:layout_height="@dimen/_30sdp"
+                                android:textColor="#000"
+                                android:textColorHint="#000"
+                                android:textAlignment="center"
+                                android:singleLine="true"
+                                android:imeOptions="actionDone"
+                                android:background="@drawable/round_edges_white"
+                                android:inputType="textPassword"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/btn_forgot_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Forgot Password?"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:id="@+id/btn_signup"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.7"
+                                android:text="Signup?"
+                                android:textColor="@color/white"/>
+
+                            <Button
+                                android:id="@+id/btn_login"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.3"
+                                android:text="LOGIN"
+                                android:textColor="@color/white"
+                                android:background="@drawable/round_edges"
+                                />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
