@@ -13,8 +13,6 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.instabug.library.Instabug.getApplicationContext;
-
 
 public class AppUtil {
 

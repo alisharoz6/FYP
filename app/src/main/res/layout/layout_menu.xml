@@ -21,7 +21,7 @@
                 android:orientation="vertical"
                 android:layout_weight="0.2">
 
-                <com.instabug.library.ui.custom.CircularImageView
+                <TextView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="@dimen/_5sdp"

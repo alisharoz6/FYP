@@ -29,4 +29,15 @@
     <string name="action_logout">Logout</string>
     <string name="action_mark_all_read">Mark All as Read</string>
     <string name="privacy_policy">Privacy Policy</string>
+
+    <!--Location Library Constants-->
+    <string name="leku_title_activity_location_picker">Location Picker</string>
+    <string name="leku_load_location_error">Something went wrong. Please try again.</string>
+    <string name="leku_no_search_results">There are no results for your search</string>
+    <string name="leku_unknown_location">unknown location</string>
+    <string name="leku_voice_search_promp">Search by voice…</string>
+    <string name="leku_voice_search_extra_language">en-EN</string>
+    <string name="leku_toolbar_action_voice_title">Voice</string>
+    <string name="leku_search_hint">Search</string>
+    <string name="google_maps_key">AIzaSyBgZt3sELkSDZOm7ldy2KMgE4gBDO2uWVY</string>
 </resources>

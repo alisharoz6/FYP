@@ -65,6 +65,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, MainActivity.class));
+
             }
         });
         btnMenuNewsFeed = findViewById(R.id.btnMenuNewsFeed);
@@ -72,6 +74,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, NewsFeedActivity.class));
+
             }
         });
         btnMenuSettings = findViewById(R.id.btnMenuSettings);
@@ -79,6 +83,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                btnMenu.performClick();
+
             }
         });
         btnMenuHelpAboutUs = findViewById(R.id.btnMenuHelpAboutUs);
@@ -86,6 +92,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, HelpContactActivity.class));
+
             }
         });
         btnMenuLogout = findViewById(R.id.btnMenuLogout);

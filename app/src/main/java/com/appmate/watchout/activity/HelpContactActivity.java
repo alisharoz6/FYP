@@ -61,6 +61,7 @@ public class HelpContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, MainActivity.class));
             }
         });
         btnMenuNewsFeed = findViewById(R.id.btnMenuNewsFeed);
@@ -68,6 +69,8 @@ public class HelpContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, NewsFeedActivity.class));
+
             }
         });
         btnMenuSettings = findViewById(R.id.btnMenuSettings);
@@ -75,6 +78,8 @@ public class HelpContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, SettingsActivity.class));
+
             }
         });
         btnMenuHelpAboutUs = findViewById(R.id.btnMenuHelpAboutUs);

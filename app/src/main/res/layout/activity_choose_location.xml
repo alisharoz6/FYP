@@ -19,8 +19,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layoutTtile">
+            android:layout_below="@+id/layoutTtile"
+            android:orientation="vertical">
 
+
+            <Button
+                android:text="Open Map"
+                android:id="@+id/map_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/round_edges_white"
+                android:textColor="#000"
+                tools:targetApi="lollipop"
+                />
         </LinearLayout>
 
         <RelativeLayout

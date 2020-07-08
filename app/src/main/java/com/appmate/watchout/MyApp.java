@@ -3,9 +3,7 @@ package com.appmate.watchout;
 import android.app.Application;
 import android.content.Context;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.instabug.library.Instabug;
 
 
 /**
