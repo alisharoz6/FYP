@@ -83,7 +83,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
                 Intent locationPickerIntent =   new LocationPickerActivity.Builder()
                         .withLocation(31.5204, 74.3587)
                         .withGeolocApiKey("AIzaSyDgIjrCXSxiH31ghL2fffio6Os7Y1X2JXQ")
-                        .withSearchZone("PKT")
+                        .withSearchZone("en_PK")
 //                        .withSearchZone(new SearchZoneRect(LatLng(26.525467, -18.910366), LatLng(43.906271, 5.394197)))
                         .withDefaultLocaleSearchZone()
                         .shouldReturnOkOnBackPressed()
@@ -197,6 +197,8 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                LocationActivity.this.startActivity(new Intent(LocationActivity.this, MainActivity.class));
+                finish();
             }
         });
         btnMenuNewsFeed = findViewById(R.id.btnMenuNewsFeed);
@@ -204,6 +206,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                btnMenu.performClick();
             }
         });
         btnMenuSettings = findViewById(R.id.btnMenuSettings);
@@ -211,6 +214,8 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                LocationActivity.this.startActivity(new Intent(LocationActivity.this, SettingsActivity.class));
+                finish();
             }
         });
         btnMenuHelpAboutUs = findViewById(R.id.btnMenuHelpAboutUs);
@@ -218,6 +223,8 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                LocationActivity.this.startActivity(new Intent(LocationActivity.this, HelpContactActivity.class));
+                finish();
             }
         });
         btnMenuLogout = findViewById(R.id.btnMenuLogout);

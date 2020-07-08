@@ -130,12 +130,6 @@ public class SignInActivity extends AppCompatActivity {
             alertDialogBuilder.setCancelable(true);
             // retrieve display dimensions
             Rect displayRectangle = new Rect();
-//            Window window = SignInActivity.this.getWindow();
-//            window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
-//            WindowManager.LayoutParams wlp = window.getAttributes();
-//            wlp.gravity = Gravity.BOTTOM;
-//            wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//            window.setAttributes(wlp);
 
             promptsView.setMinimumWidth((int) (displayRectangle.width() * 0.7f));
             promptsView.setMinimumHeight((int) (displayRectangle.height() * 0.01f));

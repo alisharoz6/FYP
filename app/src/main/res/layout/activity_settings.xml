@@ -19,7 +19,46 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/layoutTtile">
+            android:layout_below="@+id/layoutTtile"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_50sdp"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/btn_edit_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Profile"
+                    android:textColor="@color/white"
+                    android:background="@drawable/round_edges_red"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    />
+
+                <Button
+                    android:id="@+id/btn_change_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Password"
+                    android:textColor="@color/white"
+                    android:background="@drawable/round_edges_red"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    />
+
+                <Button
+                    android:id="@+id/btn_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="I.C.E Contacts"
+                    android:textColor="@color/white"
+                    android:background="@drawable/round_edges_red"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

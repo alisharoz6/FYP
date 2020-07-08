@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.appmate.watchout.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import io.opencensus.tags.Tag;
 
@@ -28,16 +30,49 @@ public class MainActivity extends AppCompatActivity {
     private TextView activityTitle;
     private TextView tvUsername,tvEmail,btnMenuHome,btnMenuNewsFeed,btnMenuSettings,btnMenuHelpAboutUs,btnMenuLogout;
     private View btnCreateAlert;
-
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+        storage = FirebaseStorage.getInstance();
+        storage = FirebaseStorage.getInstance("gs://watch-out-7c380.appspot.com");
+        // Create a storage reference from our app
+        storageRef = storage.getReference();
+
         setupUI();
         setupTitleBar();
         setupMenu();
+    }
+
+    public void uploadImageVideo(){
+
+        StorageReference imagesRef = storageRef.child("images");
+        StorageReference spaceRef = storageRef.child("images/space.jpg");
+
+
+        // Points to the root reference
+        storageRef = storage.getReference();
+
+        // Points to "images"
+        imagesRef = storageRef.child("images");
+
+        // Points to "images/space.jpg"
+        // Note that you can use variables to create child values
+        String fileName = "space.jpg";
+        spaceRef = imagesRef.child(fileName);
+
+        // File path is "images/space.jpg"
+        String path = spaceRef.getPath();
+
+        // File name is "space.jpg"
+        String name = spaceRef.getName();
+
+        // Points to "images"
+        imagesRef = spaceRef.getParent();
     }
 
     public void setupUI(){
@@ -46,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         btnCreateAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                MainActivity.this.startActivity(new Intent(MainActivity.this, LocationActivity.class));
+                MainActivity.this.startActivity(new Intent(MainActivity.this, LocationActivity.class));
             }
         });
     }

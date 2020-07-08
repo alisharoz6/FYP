@@ -92,6 +92,40 @@ public class AppUtil {
         return true;
     }
 
+    public static boolean validateChangePasswordForm(String currentPassword, String newPassword,String newConfirmPassword, Context context) {
+
+        if (TextUtils.isEmpty(currentPassword)) {
+            Toast.makeText(context, "Enter current password!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(newPassword)) {
+            Toast.makeText(context, "Enter new password!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(newConfirmPassword)) {
+            Toast.makeText(context, "Enter  confirm password!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!newPassword.equalsIgnoreCase(newConfirmPassword)) {
+            Toast.makeText(context, "Password Not Matched!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validateChangeProfileForm(String name, String mobile,Context context) {
+
+        if (TextUtils.isEmpty(name)) {
+            Toast.makeText(context, "Enter Full Name!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(mobile)) {
+            Toast.makeText(context, "Enter mobile number!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
 
 
 

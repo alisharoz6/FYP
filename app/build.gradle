@@ -55,6 +55,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     /*Firebase Auth Lib*/
     implementation 'com.google.firebase:firebase-auth:19.3.1'
+    /*Firebase Storage*/
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
 
     /*Location Lib*/
     implementation 'com.google.android.gms:play-services-maps:17.0.0'

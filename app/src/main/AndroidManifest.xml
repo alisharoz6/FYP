@@ -31,6 +31,7 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.LocationActivity"/>
         <activity android:name=".activity.PostActivity"/>
+        <activity android:name=".activity.HelpContactActivity"/>
         <activity
             android:name="com.schibstedspain.leku.LocationPickerActivity"
             android:label="@string/leku_title_activity_location_picker"

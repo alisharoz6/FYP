@@ -23,10 +23,12 @@ public class HelpContactActivity extends AppCompatActivity {
     private ImageView btnMenu;
     private TextView activityTitle;
     private TextView tvUsername,tvEmail,btnMenuHome,btnMenuNewsFeed,btnMenuSettings,btnMenuHelpAboutUs,btnMenuLogout;
+    private TextView tvContactEmail,tvAboutUs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_contact);
+        mContext = this;
         setupUI();
         setupTitleBar();
         setupMenu();
@@ -34,6 +36,9 @@ public class HelpContactActivity extends AppCompatActivity {
 
     public void setupUI(){
         menuLayout = findViewById(R.id.menuLayout);
+        tvContactEmail = findViewById(R.id.tv_contact_email);
+        tvAboutUs = findViewById(R.id.tv_about);
+
     }
 
     public void setupTitleBar(){
@@ -62,6 +67,7 @@ public class HelpContactActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, MainActivity.class));
+                finish();
             }
         });
         btnMenuNewsFeed = findViewById(R.id.btnMenuNewsFeed);
@@ -70,6 +76,7 @@ public class HelpContactActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, NewsFeedActivity.class));
+                finish();
 
             }
         });
@@ -79,6 +86,7 @@ public class HelpContactActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, SettingsActivity.class));
+                finish();
 
             }
         });
@@ -87,6 +95,7 @@ public class HelpContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
+                btnMenu.performClick();
             }
         });
         btnMenuLogout = findViewById(R.id.btnMenuLogout);

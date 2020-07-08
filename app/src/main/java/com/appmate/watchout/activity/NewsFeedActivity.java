@@ -27,6 +27,7 @@ public class NewsFeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
+        mContext = this;
         setupUI();
         setupTitleBar();
         setupMenu();
@@ -62,7 +63,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, MainActivity.class));
-
+                finish();
             }
         });
         btnMenuNewsFeed = findViewById(R.id.btnMenuNewsFeed);
@@ -79,7 +80,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, SettingsActivity.class));
-
+                finish();
             }
         });
         btnMenuHelpAboutUs = findViewById(R.id.btnMenuHelpAboutUs);
@@ -88,7 +89,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, HelpContactActivity.class));
-
+                finish();
             }
         });
         btnMenuLogout = findViewById(R.id.btnMenuLogout);

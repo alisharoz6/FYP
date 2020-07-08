@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/round_edges_trasparent"
+    android:layout_margin="@dimen/_10sdp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:background="@color/appBackground"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="bottom"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/_10sdp"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="@dimen/_5sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Full Name:"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="@dimen/_5sdp"/>
+                        <EditText
+                            android:id="@+id/et_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:textColor="#000"
+                            android:textColorHint="#000"
+                            android:textAlignment="center"
+                            android:background="@drawable/round_edges_white"
+                            android:singleLine="true"
+                            android:imeOptions="actionNext"
+                            android:hint="Enter full name"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="@dimen/_5sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mobile Number"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="@dimen/_5sdp"/>
+                        <EditText
+                            android:id="@+id/et_mobile_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:textColor="#000"
+                            android:textColorHint="#000"
+                            android:textAlignment="center"
+                            android:background="@drawable/round_edges_white"
+                            android:hint="Enter Mobile Number"
+                            android:singleLine="true"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        >
+
+                        <Button
+                            android:id="@+id/btn_cancel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Cancel?"
+                            android:textColor="@color/white"
+                            android:background="@drawable/round_edges_red"
+                            />
+                        <Space
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="match_parent" />
+                        <Button
+                            android:id="@+id/btn_signup"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Confirm?"
+                            android:textColor="@color/white"
+                            android:background="@drawable/round_edges_red"
+                            />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
