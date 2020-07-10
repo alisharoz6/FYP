@@ -20,4 +20,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="WhiteCheck">
+        <item name="colorAccent">#fff</item>
+        <item name="colorPrimaryDark">#fff</item>
+        <item name="colorPrimary">#fff</item>
+
+    </style>
+
 </resources>

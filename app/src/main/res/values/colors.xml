@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#26C699</color>-->
-    <!--<color name="colorPrimaryDark">#0E7162</color>-->
+    <color name="colorPrimary">#419273</color>
+    <color name="colorPrimaryDark">#02423A</color>
     <color name="white">#ffffff</color>
     <color name="color_delete_bg">#FE5A5B</color>
     <color name="color_red">#7E0606</color>
@@ -14,9 +14,7 @@
 
     <color name="appBackground">#050534</color>
 
-    <color name="colorPrimary">#E91E63</color>
-    <color name="colorPrimaryDark">#C51162</color>
-    <color name="colorAccent">#FBC02D</color>
+    <color name="colorAccent">#7E0606</color>
     <color name="colorControlActivated">#E91E63</color>
 
 </resources>

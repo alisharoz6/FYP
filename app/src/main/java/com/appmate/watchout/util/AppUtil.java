@@ -1,12 +1,17 @@
 package com.appmate.watchout.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -127,8 +132,16 @@ public class AppUtil {
     }
 
 
-
-
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 //    public static String getAccessToken(Context context){
 //        String userModelStr = UserSharedPreferences.getString(context,UserSharedPreferences.USER_MODEL);
 //        if (TextUtils.isEmpty(userModelStr))return userModelStr;

@@ -64,7 +64,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
 
     private Button map_button;
     private final int  MAP_BUTTON_REQUEST_CODE = 1;
-    private final int MAP_POIS_BUTTON_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +73,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         setupUI();
         setupTitleBar();
         setupMenu();
-        startLocation();
 //        SearchZoneRect(LatLng(26.525467, -18.910366), LatLng(43.906271, 5.394197))
         map_button =    findViewById(R.id.map_button);
         map_button.setOnClickListener(new View.OnClickListener() {
@@ -105,27 +103,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         });
 
 
-    }
-
-    public void startLocation(){
-//             Intent locationPickerIntent =   new LocationPickerActivity.Builder()
-//                .withLocation(41.4036299, 2.1743558)
-//                .withGeolocApiKey("AIzaSyDgIjrCXSxiH31ghL2fffio6Os7Y1X2JXQ")
-//                .withSearchZone("es_ES")
-//                .withSearchZone()
-//                .withDefaultLocaleSearchZone()
-//                .shouldReturnOkOnBackPressed()
-//                .withStreetHidden()
-//                .withCityHidden()
-//                .withZipCodeHidden()
-//                .withSatelliteViewHidden()
-//                .withGooglePlacesEnabled()
-//                .withGoogleTimeZoneEnabled()
-//                .withVoiceSearchHidden()
-//                .withUnnamedRoadHidden()
-//                .build(mContext);
-//
-//        startActivityForResult(locationPickerIntent, MAP_BUTTON_REQUEST_CODE);
     }
 
     @Override

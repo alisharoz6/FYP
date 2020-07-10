@@ -58,6 +58,9 @@ dependencies {
     /*Firebase Storage*/
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
+    /*Severity Bar*/
+    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+
     /*Location Lib*/
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'

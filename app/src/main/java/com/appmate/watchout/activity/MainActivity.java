@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
-        storage = FirebaseStorage.getInstance();
         storage = FirebaseStorage.getInstance("gs://watch-out-7c380.appspot.com");
         // Create a storage reference from our app
         storageRef = storage.getReference();
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         btnCreateAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.startActivity(new Intent(MainActivity.this, LocationActivity.class));
+                MainActivity.this.startActivity(new Intent(MainActivity.this, PostActivity  .class));
             }
         });
     }
