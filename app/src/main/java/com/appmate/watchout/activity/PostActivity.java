@@ -228,19 +228,20 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
 
             }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                Toast.makeText(mContext,"Upload is " + progress + "% done",Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload is paused");
-            }
-        });;
+        });
+//                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+//                Toast.makeText(mContext,"Upload is " + progress + "% done",Toast.LENGTH_SHORT).show();
+//
+//            }
+//        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+//                System.out.println("Upload is paused");
+//            }
+//        });
     }
 
     /*It ready the file which has to be uploaded either Image or Video*/
