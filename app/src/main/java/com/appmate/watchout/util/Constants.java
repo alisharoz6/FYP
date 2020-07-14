@@ -15,5 +15,9 @@ public class Constants {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA
     };
+    public static final String[] LOCATION_PERMISSIONS = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+    };
 
 }

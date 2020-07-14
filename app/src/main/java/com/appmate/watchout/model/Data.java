@@ -10,7 +10,7 @@ public class Data implements Serializable {
     private String  video;
     private String  image;
     private Location  location;
-    private int severity;
+    private String severity;
     private String  type;
     private int  alertCount;
     private int  reportCount;
@@ -18,7 +18,7 @@ public class Data implements Serializable {
     public Data() {
     }
 
-    public Data(String userName, String userId, String userEmail, String event, String video, String image, Location location, int serverity, String type, int alertCount, int reportCount) {
+    public Data(String userName, String userId, String userEmail, String event, String video, String image, Location location, String serverity, String type, int alertCount, int reportCount) {
         this.userName = userName;
         this.userId = userId;
         this.userEmail = userEmail;
@@ -88,11 +88,11 @@ public class Data implements Serializable {
         this.location = location;
     }
 
-    public int getSeverity() {
+    public String getSeverity() {
         return severity;
     }
 
-    public void setSeverity(int severity) {
+    public void setSeverity(String severity) {
         this.severity = severity;
     }
 

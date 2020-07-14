@@ -50,6 +50,7 @@ import static com.appmate.watchout.MyApp.logoutUser;
 import static com.appmate.watchout.util.AppUtil.hasPermissions;
 import static com.appmate.watchout.util.Constants.GALLERY_REQUEST_CODE;
 import static com.appmate.watchout.util.Constants.IMAGE_REQUEST_CODE;
+import static com.appmate.watchout.util.Constants.LOCATION_PERMISSIONS;
 import static com.appmate.watchout.util.Constants.MAP_BUTTON_REQUEST_CODE;
 import static com.appmate.watchout.util.Constants.PERMISSIONS;
 import static com.appmate.watchout.util.Constants.PERMISSION_ALL;
@@ -72,7 +73,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     /**/
 
     private EditText et_detail;
-    private Button btn_camera,btn_video, btn_gallery;
+    private Button btn_camera, btn_video, btn_gallery;
     private ImageView iv_event;
     private VideoView vv_event;
 
@@ -82,7 +83,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private String cameraFilePath;
     /**/
     private BubbleSeekBar seek;
-    private CheckBox cb_theft,cb_murder,cb_fire,cb_terror,cb_natural,cb_other;
+    private CheckBox cb_theft, cb_murder, cb_fire, cb_terror, cb_natural, cb_other;
 
     /*Data*/
     private Data postToCreate;
@@ -93,6 +94,9 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     /**/
     private FirebaseStorage storage;
     private StorageReference storageRef;
+
+    private String incidentType = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +139,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (!hasPermissions(mContext, PERMISSIONS)) {
                     ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
-                }else{
+                } else {
                     captureImage();
                 }
             }
@@ -146,7 +150,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (!hasPermissions(mContext, PERMISSIONS)) {
                     ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
-                }else {
+                } else {
                     imageFromGallery();
                 }
             }
@@ -157,56 +161,70 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (!hasPermissions(mContext, PERMISSIONS)) {
                     ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
-                }else{
+                } else {
                     captureVideo();
                 }
             }
         });
 
-        map_button =    findViewById(R.id.map_button);
+        map_button = findViewById(R.id.map_button);
         map_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent locationPickerIntent =   new LocationPickerActivity.Builder()
-                        .withLocation(31.5204, 74.3587)
-                        .withGeolocApiKey("AIzaSyDgIjrCXSxiH31ghL2fffio6Os7Y1X2JXQ")
-                        .withSearchZone("en_PK")
+                if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
+                    ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
+                } else {
+                    Intent locationPickerIntent = new LocationPickerActivity.Builder()
+                            .withLocation(31.5204, 74.3587)
+                            .withGeolocApiKey("AIzaSyDgIjrCXSxiH31ghL2fffio6Os7Y1X2JXQ")
+                            .withSearchZone("en_PK")
 //                        .withSearchZone(new SearchZoneRect(LatLng(26.525467, -18.910366), LatLng(43.906271, 5.394197)))
-                        .withDefaultLocaleSearchZone()
-                        .shouldReturnOkOnBackPressed()
+                            .withDefaultLocaleSearchZone()
+                            .shouldReturnOkOnBackPressed()
 //                        .withStreetHidden()
 //                        .withCityHidden()
 //                        .withZipCodeHidden()
 //                        .withSatelliteViewHidden()
 //                        .withGooglePlacesEnabled()
-                        .withGoogleTimeZoneEnabled()
+                            .withGoogleTimeZoneEnabled()
 //                        .withVoiceSearchHidden()
 //                        .withUnnamedRoadHidden()
-                        .build(mContext);
+                            .build(mContext);
+                    startActivityForResult(locationPickerIntent, MAP_BUTTON_REQUEST_CODE);
+                }
 
                 // this is optional if you want to return RESULT_OK if you don't set the latitude/longitude and click back button
 //                locationPickerIntent.putExtra("test", "this is a test");
 
-                startActivityForResult(locationPickerIntent, MAP_BUTTON_REQUEST_CODE);
             }
         });
-        btn_uploadFile =  findViewById(R.id.btn_uploadFile);
+        btn_uploadFile = findViewById(R.id.btn_uploadFile);
         btn_uploadFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadFile(cameraFilePath);
+//                uploadFile(cameraFilePath,"event1");
+                createIncidentPost();
             }
         });
     }
 
+    public void createIncidentPost() {
+        //Event Details
+        postToCreate.setEvent(et_detail.getText().toString());
+        //Attached Image/Video
+        uploadFile(cameraFilePath, ".jpg", "event1", postToCreate);
+        //Location
+        postToCreate.getLocation();
+        postToCreate.setSeverity(getSeekBarValue());
+        postToCreate.setType(incidentType);
+    }
 
+    public void uploadFile(String filePath, String fileType, String event, Data data) {
 
-    public void uploadFile(String filePath){
-
-        StorageReference alertImages = storageRef.child("alertImages/event1.jpg");
+        StorageReference alertImages = storageRef.child("alertImages/" + event + fileType);
         InputStream stream = null;
         try {
-            stream = new FileInputStream(new File(filePath.replace("file:","")));
+            stream = new FileInputStream(new File(filePath.replace("file:", "")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -217,7 +235,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                Toast.makeText(mContext,"Failure",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Failure", Toast.LENGTH_SHORT).show();
 
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -225,29 +243,38 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
-
+                // get the image Url of the file uploaded
+                alertImages.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // getting image uri and converting into string
+                        System.out.println(uri.toString());
+                        if(fileType.equalsIgnoreCase(".jpg")){
+                            data.setImage(uri.toString());
+                        }
+                        else{
+                            data.setVideo(uri.toString());
+                        }
+                        Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                        //Call Post Event To DB Here
+                    }
+                });
             }
-        });
-//                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+        })
+        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 //                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 //                Toast.makeText(mContext,"Upload is " + progress + "% done",Toast.LENGTH_SHORT).show();
-//
-//            }
-//        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+            }
+        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
 //                System.out.println("Upload is paused");
-//            }
-//        });
+            }
+        });
     }
 
-    /*It ready the file which has to be uploaded either Image or Video*/
-    public void readyFileForUpload(){
-
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -257,13 +284,15 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 case GALLERY_REQUEST_CODE:
                     //data.getData returns the content URI for the selected Image
                     Uri selectedImage = data.getData();
+                    iv_event.setVisibility(View.VISIBLE);
                     iv_event.setImageURI(selectedImage);
                     break;
                 case IMAGE_REQUEST_CODE:
+                    iv_event.setVisibility(View.VISIBLE);
                     iv_event.setImageURI(Uri.parse(cameraFilePath));
                     break;
                 case VIDEO_REQUEST_CODE:
-                    iv_event.setVisibility(View.VISIBLE);
+//                    vv_event.setVisibility(View.VISIBLE);
                     vv_event.setVideoURI(Uri.parse(cameraFilePath));
                     break;
                 case MAP_BUTTON_REQUEST_CODE:
@@ -273,7 +302,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public Location getLatLng(Intent data){
+    public Location getLatLng(Intent data) {
         double latitude = data.getDoubleExtra(LATITUDE, 0.0);
         Log.d("LATITUDE****", String.valueOf(latitude));
         double longitude = data.getDoubleExtra(LONGITUDE, 0.0);
@@ -282,12 +311,16 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("ADDRESS****", address.toString());
         String postalcode = data.getStringExtra(ZIPCODE);
         Log.d("POSTALCODE****", postalcode.toString());
-        return new Location(latitude,longitude);
+        return new Location(latitude, longitude);
     }
 
-    public String getSeekBarValue(){
-        Toast.makeText(mContext,String.valueOf(seek.getProgress()),Toast.LENGTH_SHORT).show();
+    public String getSeekBarValue() {
+        Toast.makeText(mContext, String.valueOf(seek.getProgress()), Toast.LENGTH_SHORT).show();
         return String.valueOf(seek.getProgress());
+    }
+
+    public void setCheckedIncidentType() {
+
     }
 
     public void setupTitleBar() {
@@ -371,18 +404,18 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", createImageFile("JPEG_",".jpg")));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", createImageFile("JPEG_", ".jpg")));
         startActivityForResult(intent, IMAGE_REQUEST_CODE);
     }
 
     private void captureVideo() {
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE  );
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", createVideoFile("MP4_",".mp4")));
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", createVideoFile("MP4_", ".mp4")));
         startActivityForResult(intent, VIDEO_REQUEST_CODE);
     }
 
 
-    private File createImageFile(String fileInitials,String suffix) {
+    private File createImageFile(String fileInitials, String suffix) {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = fileInitials + timeStamp + "_";
@@ -405,7 +438,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         return image;
     }
 
-    private File createVideoFile(String fileInitials,String suffix) {
+    private File createVideoFile(String fileInitials, String suffix) {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = fileInitials + timeStamp + "_";
@@ -430,13 +463,14 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.cb_theft:
                 cb_fire.setChecked(false);
                 cb_murder.setChecked(false);
                 cb_natural.setChecked(false);
                 cb_other.setChecked(false);
                 cb_terror.setChecked(false);
+                incidentType = "Theft";
                 break;
             case R.id.cb_fire:
                 cb_theft.setChecked(false);
@@ -444,6 +478,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 cb_natural.setChecked(false);
                 cb_other.setChecked(false);
                 cb_terror.setChecked(false);
+                incidentType = "Fire";
                 break;
             case R.id.cb_murder:
                 cb_theft.setChecked(false);
@@ -451,6 +486,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 cb_natural.setChecked(false);
                 cb_other.setChecked(false);
                 cb_terror.setChecked(false);
+                incidentType = "Murder";
                 break;
             case R.id.cb_natural:
                 cb_theft.setChecked(false);
@@ -458,6 +494,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 cb_murder.setChecked(false);
                 cb_other.setChecked(false);
                 cb_terror.setChecked(false);
+                incidentType = "Natural";
                 break;
             case R.id.cb_other:
                 cb_theft.setChecked(false);
@@ -465,6 +502,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 cb_murder.setChecked(false);
                 cb_natural.setChecked(false);
                 cb_terror.setChecked(false);
+                incidentType = "Other";
                 break;
             case R.id.cb_terror:
                 cb_theft.setChecked(false);
@@ -472,6 +510,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 cb_murder.setChecked(false);
                 cb_natural.setChecked(false);
                 cb_other.setChecked(false);
+                incidentType = "Terror ";
                 break;
         }
     }
