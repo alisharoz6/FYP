@@ -29,6 +29,10 @@ import com.appmate.watchout.model.Data;
 import com.appmate.watchout.model.Location;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -44,9 +48,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.appmate.watchout.util.AppUtil.hasPermissions;
 import static com.appmate.watchout.util.Constants.GALLERY_REQUEST_CODE;
 import static com.appmate.watchout.util.Constants.IMAGE_REQUEST_CODE;
@@ -90,10 +100,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     /**/
 
     /*Testing*/
-    private Button btn_uploadFile;
+    private Button btn_saveEvent,btn_cancel;
     /**/
     private FirebaseStorage storage;
     private StorageReference storageRef;
+    private FirebaseFirestore db;
+    private DocumentReference dbRef;
+
 
     private String incidentType = "";
 
@@ -105,6 +118,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         postToCreate = new Data();
         storage = FirebaseStorage.getInstance("gs://watch-out-7c380.appspot.com");
         storageRef = storage.getReference();
+        db = FirebaseFirestore.getInstance();
         setupUI();
         setupTitleBar();
         setupMenu();
@@ -198,25 +212,102 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        btn_uploadFile = findViewById(R.id.btn_uploadFile);
-        btn_uploadFile.setOnClickListener(new View.OnClickListener() {
+        btn_saveEvent = findViewById(R.id.btn_saveEvent);
+        btn_saveEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                uploadFile(cameraFilePath,"event1");
                 createIncidentPost();
             }
         });
+        btn_cancel = findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     public void createIncidentPost() {
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         //Event Details
         postToCreate.setEvent(et_detail.getText().toString());
-        //Attached Image/Video
-        uploadFile(cameraFilePath, ".jpg", "event1", postToCreate);
         //Location
         postToCreate.getLocation();
         postToCreate.setSeverity(getSeekBarValue());
         postToCreate.setType(incidentType);
+        postToCreate.setId(uuid);
+        //Attached Image/Video
+        uploadFile(cameraFilePath, ".jpg", uuid, postToCreate);
+//        postData(postToCreate);
+    }
+
+    private void postData(Data data) {
+
+//        DocumentReference contact = db.collection("events").document("post");
+//        contact.update("eventName", data.getEvent());
+//        contact.update("image", data.getImage());
+//        contact.update("video", data.getVideo());
+//        contact.update("location", data.getLocation());
+//        contact.update("reportCount", data.getReportCount());
+//        contact.update("alertCount", data.getAlertCount());
+//        contact.update("severity", data.getSeverity());
+//        contact.update("type", data.getType());
+//        contact.update("email", data.getUserEmail());
+//        contact.update("userId", data.getUserId());
+//        contact.update("userName", data.getUserName())
+//        .addOnSuccessListener(new OnSuccessListener < Void > () {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Toast.makeText(PostActivity.this, "Updated Successfully",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        })
+//        .addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(PostActivity.this, "Updated Failed",
+//                        Toast.LENGTH_SHORT).show();
+//                System.out.println("Result Update :: "+e);
+//            }
+//        });
+
+//        FieldValue.arrayUnion(mAuth.getCurrentUser().getUid())
+
+//        List<Data> dataList = new ArrayList<>();
+        //        dataList.add(data);
+//        map.put("0", dataList);
+        Map<String, Object> map = new HashMap<>();
+        map.put("id" , data.getId());
+        map.put("eventName", data.getEvent());
+        map.put("image", data.getImage());
+        map.put("video", data.getVideo());
+        map.put("location", data.getLocation());
+        map.put("reportCount", data.getReportCount());
+        map.put("alertCount", data.getAlertCount());
+        map.put("severity", data.getSeverity());
+        map.put("type", data.getType());
+        map.put("email", mAuth.getCurrentUser().getEmail());
+        map.put("userId", mAuth.getCurrentUser().getUid());
+        map.put("userName", mAuth.getCurrentUser().getDisplayName());
+        final Map<String, Object> addUserToArrayMap = new HashMap<>();
+        addUserToArrayMap.put("arrayOfUsers", map);
+
+            db.collection("events").document("post").update("posts",FieldValue.arrayUnion(map)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(PostActivity.this, "Incident Posted Successfully!",
+                        Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PostActivity.this, "Updated Failed",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void uploadFile(String filePath, String fileType, String event, Data data) {
@@ -257,6 +348,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                         //Call Post Event To DB Here
+                        postData(data);
                     }
                 });
             }

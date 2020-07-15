@@ -3,6 +3,7 @@ package com.appmate.watchout.model;
 import java.io.Serializable;
 
 public class Data implements Serializable {
+    private String  id;
     private String  userName;
     private String  userId;
     private String  userEmail;
@@ -12,13 +13,14 @@ public class Data implements Serializable {
     private Location  location;
     private String severity;
     private String  type;
-    private int  alertCount;
-    private int  reportCount;
+    private long  alertCount;
+    private long  reportCount;
 
     public Data() {
     }
 
-    public Data(String userName, String userId, String userEmail, String event, String video, String image, Location location, String serverity, String type, int alertCount, int reportCount) {
+    public Data(String id,String userName, String userId, String userEmail, String event, String video, String image, Location location, String serverity, String type, long alertCount, long reportCount) {
+        this.id = id;
         this.userName = userName;
         this.userId = userId;
         this.userEmail = userEmail;
@@ -30,6 +32,14 @@ public class Data implements Serializable {
         this.type = type;
         this.alertCount = alertCount;
         this.reportCount = reportCount;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -104,19 +114,19 @@ public class Data implements Serializable {
         this.type = type;
     }
 
-    public int getAlertCount() {
+    public long getAlertCount() {
         return alertCount;
     }
 
-    public void setAlertCount(int alertCount) {
+    public void setAlertCount(long alertCount) {
         this.alertCount = alertCount;
     }
 
-    public int getReportCount() {
+    public long getReportCount() {
         return reportCount;
     }
 
-    public void setReportCount(int reportCount) {
+    public void setReportCount(long reportCount) {
         this.reportCount = reportCount;
     }
 }
