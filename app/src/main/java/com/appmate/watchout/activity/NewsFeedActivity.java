@@ -135,7 +135,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 });
     }
 
-    public void deleteEvent(HashMap map){
+    public void deleteEvent(HashMap map, int index){
         showProgress();
         db.collection("events").document("post").update("posts", FieldValue.arrayRemove(map)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -143,7 +143,8 @@ public class NewsFeedActivity extends AppCompatActivity {
                 hideProgress();
                 Toast.makeText(NewsFeedActivity.this, "Incident Deleted Successfully!",
                         Toast.LENGTH_SHORT).show();
-                onBackPressed();
+                feeds.remove(index);
+                rvNewsFeed.getAdapter().notifyDataSetChanged();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -176,7 +177,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 if(finalReportCount >5){
-                    deleteEvent(mynewMap);
+                    deleteEvent(mynewMap,index);
                 }
                 else if(finalAlertCount >5){
                     //Trigger Firebase Message Event
