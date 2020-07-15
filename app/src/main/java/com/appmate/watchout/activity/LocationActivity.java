@@ -42,6 +42,7 @@ import java.util.TimeZone;
 import kotlin.Pair;
 
 import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.schibstedspain.leku.LocationPickerActivityKt.ADDRESS;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LATITUDE;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LEKU_POI;
@@ -169,6 +170,8 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvUsername);
+        tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
+        tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override

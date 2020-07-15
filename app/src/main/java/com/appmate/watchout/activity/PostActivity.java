@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -27,6 +28,9 @@ import com.appmate.watchout.BuildConfig;
 import com.appmate.watchout.R;
 import com.appmate.watchout.model.Data;
 import com.appmate.watchout.model.Location;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -76,10 +80,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     private Context mContext;
 
     /*Base Layout*/
-    private View menuLayout;
+    private View menuLayout,loadingLayout;
     private ImageView btnMenu;
     private TextView activityTitle;
     private TextView tvUsername, tvEmail, btnMenuHome, btnMenuNewsFeed, btnMenuSettings, btnMenuHelpAboutUs, btnMenuLogout;
+    private SpinKitView progressBar;
     /**/
 
     private EditText et_detail;
@@ -122,10 +127,24 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         setupUI();
         setupTitleBar();
         setupMenu();
+        setupProgressBar();
     }
 
+    private void setupProgressBar() {
+        progressBar =  findViewById(R.id.spin_kit);
+        Sprite doubleBounce = new DoubleBounce();
+        progressBar.setIndeterminateDrawable(doubleBounce);
+    }
+
+    public void showProgress(){
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+    public void hideProgress(){
+        loadingLayout.setVisibility(View.GONE);
+    }
     public void setupUI() {
         menuLayout = findViewById(R.id.menuLayout);
+        loadingLayout = findViewById(R.id.loadingLayout);
 
         et_detail = findViewById(R.id.et_detail);
         iv_event = findViewById(R.id.iv_event);
@@ -230,6 +249,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void createIncidentPost() {
+        showProgress();
         String uuid = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         //Event Details
         postToCreate.setEvent(et_detail.getText().toString());
@@ -239,7 +259,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         postToCreate.setType(incidentType);
         postToCreate.setId(uuid);
         //Attached Image/Video
-        uploadFile(cameraFilePath, ".jpg", uuid, postToCreate);
+        if(cameraFilePath!=null)
+            uploadFile(cameraFilePath, ".jpg", uuid, postToCreate);
 //        postData(postToCreate);
     }
 
@@ -291,12 +312,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         map.put("email", mAuth.getCurrentUser().getEmail());
         map.put("userId", mAuth.getCurrentUser().getUid());
         map.put("userName", mAuth.getCurrentUser().getDisplayName());
-        final Map<String, Object> addUserToArrayMap = new HashMap<>();
-        addUserToArrayMap.put("arrayOfUsers", map);
 
             db.collection("events").document("post").update("posts",FieldValue.arrayUnion(map)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                hideProgress();
                 Toast.makeText(PostActivity.this, "Incident Posted Successfully!",
                         Toast.LENGTH_SHORT).show();
                 onBackPressed();
@@ -304,6 +324,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                hideProgress();
                 Toast.makeText(PostActivity.this, "Updated Failed",
                         Toast.LENGTH_SHORT).show();
             }
@@ -327,6 +348,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
                 Toast.makeText(mContext, "Failure", Toast.LENGTH_SHORT).show();
+                hideProgress();
 
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -434,6 +456,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     public void setupMenu() {
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvUsername);
+        tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
+        tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override

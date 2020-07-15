@@ -19,28 +19,37 @@ import com.appmate.watchout.R;
 import com.appmate.watchout.adapter.NewsFeedAdapter;
 import com.appmate.watchout.model.Data;
 import com.appmate.watchout.model.Location;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.mAuth;
 
 public class NewsFeedActivity extends AppCompatActivity {
 
     private String TAG = "NewsFeedActivity";
     private Context mContext;
 
-    private View menuLayout;
+    private View menuLayout,loadingLayout;
     private ImageView btnMenu;
     private TextView activityTitle;
     private TextView tvUsername,tvEmail,btnMenuHome,btnMenuNewsFeed,btnMenuSettings,btnMenuHelpAboutUs,btnMenuLogout;
 
-    private Button btn_data;
+    private Button btn_data,btn_data2;
+
+    private SpinKitView progressBar;
 
     private RecyclerView rvNewsFeed;
     private ArrayList<Data> feeds = new ArrayList<>();
@@ -56,17 +65,39 @@ public class NewsFeedActivity extends AppCompatActivity {
         setupUI();
         setupTitleBar();
         setupMenu();
+        setupProgressBar();
         btn_data = findViewById(R.id.btn_data);
         btn_data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadDataFromFB();
+                updateData(0, "alert");
+            }
+        });
+        btn_data2 = findViewById(R.id.btn_data2);
+        btn_data2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateData(0, "report");
             }
         });
     }
 
+    private void setupProgressBar() {
+        progressBar =  findViewById(R.id.spin_kit);
+        Sprite doubleBounce = new DoubleBounce();
+        progressBar.setIndeterminateDrawable(doubleBounce);
+    }
+
+    public void showProgress(){
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+    public void hideProgress(){
+        loadingLayout.setVisibility(View.GONE);
+    }
+
     public void setupUI(){
         menuLayout = findViewById(R.id.menuLayout);
+        loadingLayout = findViewById(R.id.loadingLayout);
 
         rvNewsFeed = findViewById(R.id.rv_feed);
         rvNewsFeed.setLayoutManager(new LinearLayoutManager(mContext));
@@ -76,12 +107,13 @@ public class NewsFeedActivity extends AppCompatActivity {
         loadDataFromFB();
     }
 
-    private void loadDataFromFB() {
+    public void loadDataFromFB() {
         db = FirebaseFirestore.getInstance();
         loadData();
     }
 
-    private void loadData() {
+    public void loadData() {
+        showProgress();
         db.collection("events").document("post")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -98,11 +130,92 @@ public class NewsFeedActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(NewsFeedActivity.this, "Data Load Failed!",
                                 Toast.LENGTH_SHORT).show();
+                        hideProgress();
                     }
                 });
     }
 
-    private void mapDataToModel(ArrayList<HashMap<String, Data>> data) {
+    public void deleteEvent(HashMap map){
+        showProgress();
+        db.collection("events").document("post").update("posts", FieldValue.arrayRemove(map)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                hideProgress();
+                Toast.makeText(NewsFeedActivity.this, "Incident Deleted Successfully!",
+                        Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(NewsFeedActivity.this, "Updated Failed",
+                        Toast.LENGTH_SHORT).show();
+                hideProgress();
+            }
+        });
+    }
+
+    public void updateAlertReportCount(ArrayList<HashMap<String, Data>> data, HashMap mynewMap, int index, String clickType){
+        long reportCount = 0;
+        long alertCount = 0;
+        if(clickType.equalsIgnoreCase("alert")){
+            alertCount = (long) mynewMap.get("alertCount");
+            alertCount++;
+            mynewMap.put("alertCount", alertCount);
+        }
+        else{
+            reportCount = (long) mynewMap.get("reportCount");
+            reportCount++;
+            mynewMap.put("reportCount", reportCount);
+        }
+        data.set(index, mynewMap);
+        long finalReportCount = reportCount;
+        long finalAlertCount = alertCount;
+        db.collection("events").document("post")
+                .update("posts", data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                if(finalReportCount >5){
+                    deleteEvent(mynewMap);
+                }
+                else if(finalAlertCount >5){
+                    //Trigger Firebase Message Event
+                }
+                hideProgress();
+                Toast.makeText(NewsFeedActivity.this, "Data Update Success!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(NewsFeedActivity.this, "Data Failed!",
+                        Toast.LENGTH_SHORT).show();
+                hideProgress();
+            }
+        });
+    }
+    public void updateData(int index, String clickType) {
+        showProgress();
+        db.collection("events").document("post")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        ArrayList<HashMap<String, Data>> data = (ArrayList<HashMap<String, Data>>) documentSnapshot.get("posts");
+                        HashMap mynewMap = data.get(index);
+                        updateAlertReportCount(data,mynewMap,index,clickType);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(NewsFeedActivity.this, "Data Load Failed!",
+                        Toast.LENGTH_SHORT).show();
+                hideProgress();
+            }
+        });
+    }
+
+    public void mapDataToModel(ArrayList<HashMap<String, Data>> data) {
         for(HashMap map : data){
             Location location = null;
             if(map.get("location") != null){
@@ -113,6 +226,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                     , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount")));
         }
         rvNewsFeed.getAdapter().notifyDataSetChanged();
+        hideProgress();
     }
 
     public void setupTitleBar(){
@@ -135,6 +249,8 @@ public class NewsFeedActivity extends AppCompatActivity {
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvUsername);
+        tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
+        tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override

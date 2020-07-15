@@ -34,6 +34,18 @@
                 android:visibility="gone"
                 />
 
+            <Button
+                android:id="@+id/btn_data2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:textColor="@color/white"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:background="@drawable/round_edges"
+                android:text="Get Data 2"
+                android:visibility="gone"
+                />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_feed"
                 android:layout_width="match_parent"
@@ -54,6 +66,10 @@
                 android:id="@+id/menuLayout"
                 layout="@layout/layout_menu"
                 android:visibility="gone"/>
+            <include
+                android:id="@+id/loadingLayout"
+                layout="@layout/view_loading"
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
 

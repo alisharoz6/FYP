@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appmate.watchout.R;
+import com.appmate.watchout.activity.NewsFeedActivity;
 import com.appmate.watchout.model.Data;
 
 import java.util.ArrayList;
@@ -61,13 +62,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
         holder.btn_alert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Implement Alert Report
+                //Implement Alert
+                if (mContext instanceof NewsFeedActivity) {
+                    ((NewsFeedActivity)mContext).updateData(position,"alert");
+                }
             }
         });
         holder.btn_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Implement Alert Report
+                //Implement Report
+                if (mContext instanceof NewsFeedActivity) {
+                    ((NewsFeedActivity)mContext).updateData(position,"report");
+                }
             }
         });
     }

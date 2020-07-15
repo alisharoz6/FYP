@@ -91,6 +91,8 @@ public class SettingsActivity extends AppCompatActivity {
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvUsername);
+        tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
+        tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
