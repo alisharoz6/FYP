@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,10 +19,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appmate.watchout.R;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-import static com.appmate.watchout.MyApp.logoutUser;
+import java.util.ArrayList;
+
+import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.appmate.watchout.util.AppUtil.validateChangePasswordForm;
 import static com.appmate.watchout.util.AppUtil.validateChangeProfileForm;
@@ -31,11 +39,15 @@ public class SettingsActivity extends AppCompatActivity {
     private String TAG = "SettingsActivity";
     private Context mContext;
 
-    private View menuLayout;
+    private View menuLayout,loadingLayout;
     private ImageView btnMenu;
     private TextView activityTitle;
     private TextView tvUsername,tvEmail,btnMenuHome,btnMenuNewsFeed,btnMenuSettings,btnMenuHelpAboutUs,btnMenuLogout;
     private Button btn_edit_profile,btn_change_password,btn_contacts;
+    private SpinKitView progressBar;
+
+    /*Shared Pref*/
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +56,38 @@ public class SettingsActivity extends AppCompatActivity {
         setupUI();
         setupTitleBar();
         setupMenu();
+        loadPref();
+        setupProgressBar();
+    }
+
+    private void setupProgressBar() {
+        progressBar =  findViewById(R.id.spin_kit);
+        Sprite doubleBounce = new DoubleBounce();
+        progressBar.setIndeterminateDrawable(doubleBounce);
+    }
+
+    public void showProgress(){
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+    public void hideProgress(){
+        loadingLayout.setVisibility(View.GONE);
+    }
+
+    private void loadPref() {
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+    }
+
+    public ArrayList<String> loadICE(){
+        ArrayList<String> iceList = new ArrayList<>();
+        iceList.add(sharedPreferences.getString("ice1", ""));
+        iceList.add(sharedPreferences.getString("ice2", ""));
+        iceList.add(sharedPreferences.getString("ice3", ""));
+        return iceList;
     }
 
     public void setupUI(){
         menuLayout = findViewById(R.id.menuLayout);
+        loadingLayout =  findViewById(R.id.loadingLayout);
         btn_edit_profile = findViewById(R.id.btn_edit_profile);
         btn_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +137,6 @@ public class SettingsActivity extends AppCompatActivity {
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, MainActivity.class));
                 finish();
             }
@@ -106,7 +145,6 @@ public class SettingsActivity extends AppCompatActivity {
         btnMenuNewsFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, NewsFeedActivity.class));
                 finish();
             }
@@ -115,7 +153,6 @@ public class SettingsActivity extends AppCompatActivity {
         btnMenuSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 btnMenu.performClick();
                 finish();
 
@@ -125,7 +162,6 @@ public class SettingsActivity extends AppCompatActivity {
         btnMenuHelpAboutUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, HelpContactActivity.class));
                 finish();
             }
@@ -134,7 +170,6 @@ public class SettingsActivity extends AppCompatActivity {
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 logoutUser();
                 SettingsActivity.this.startActivity(new Intent(SettingsActivity.this, SignInActivity.class));
                 finish();
@@ -160,8 +195,30 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void updateICE(String ice1, String ice2, String ice3, Context context) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("ice1", ice1);
+        editor.putString("ice2", ice2);
+        editor.putString("ice3", ice3);
+        editor.commit();
     }
     private void updateProfile(String name, String mobile, Context context) {
+        mAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     public void showChangePasswordDialog(final Context context){
@@ -221,6 +278,11 @@ public class SettingsActivity extends AppCompatActivity {
             final EditText et_ice1 = promptsView.findViewById(R.id.et_ice1);
             final EditText et_ice2 = promptsView.findViewById(R.id.et_ice2);
             final EditText et_ice3 = promptsView.findViewById(R.id.et_ice3);
+            ArrayList<String> iceList = loadICE();
+            et_ice1.setText(iceList.get(0).toString());
+            et_ice2.setText(iceList.get(1).toString());
+            et_ice3.setText(iceList.get(2).toString());
+
             final Button   btnCancel = promptsView.findViewById(R.id.btn_cancel);
             final Button   btnConfirm = promptsView.findViewById(R.id.btn_confirm);
 

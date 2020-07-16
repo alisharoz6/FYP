@@ -1,14 +1,21 @@
 package com.appmate.watchout.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.appmate.watchout.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,8 +25,15 @@ import com.google.firebase.storage.StorageReference;
 
 import io.opencensus.tags.Tag;
 
-import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
+import static com.appmate.watchout.util.AppUtil.hasPermissions;
+import static com.appmate.watchout.util.Constants.LOCATION_PERMISSIONS;
+import static com.appmate.watchout.util.Constants.LOCATION_REFRESH_DISTANCE;
+import static com.appmate.watchout.util.Constants.LOCATION_REFRESH_TIME;
+import static com.appmate.watchout.util.Constants.PERMISSIONS;
+import static com.appmate.watchout.util.Constants.PERMISSION_ALL;
+import static com.appmate.watchout.util.Constants.currentLocation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private View btnCreateAlert;
     private FirebaseStorage storage;
     private StorageReference storageRef;
+    private LocationManager mLocationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance("gs://watch-out-7c380.appspot.com");
         // Create a storage reference from our app
         storageRef = storage.getReference();
-
+        requestCurrentLocation();
         setupUI();
         setupTitleBar();
         setupMenu();
@@ -113,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 btnMenu.performClick();
             }
         });
@@ -121,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         btnMenuNewsFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 MainActivity.this.startActivity(new Intent(MainActivity.this, NewsFeedActivity.class));
             }
         });
@@ -129,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         btnMenuSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 MainActivity.this.startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
@@ -137,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         btnMenuHelpAboutUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 MainActivity.this.startActivity(new Intent(MainActivity.this, HelpContactActivity.class));
             }
         });
@@ -145,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 logoutUser();
                 MainActivity.this.startActivity(new Intent(MainActivity.this, SignInActivity.class));
                 finish();
@@ -154,35 +165,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    public void getUser(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
+    private void requestCurrentLocation() {
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
+            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+                    LOCATION_REFRESH_DISTANCE, mLocationListener);
         }
     }
 
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            //your code here
+            currentLocation =  new com.appmate.watchout.model.Location(location.getLatitude(),location.getLongitude());
+            Log.d("Location Changed", "Lat : "+currentLocation.getLatitude() +"|| Lng :"+currentLocation.getLongitude());
+        }
 
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
 
+        }
 
+        @Override
+        public void onProviderEnabled(String provider) {
 
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
 
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        //FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
     }
 }

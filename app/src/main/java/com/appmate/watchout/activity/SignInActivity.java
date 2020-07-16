@@ -22,7 +22,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.appmate.watchout.R;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +42,8 @@ public class SignInActivity extends AppCompatActivity {
     private Context mContext;
     private EditText etEmail,etPassword;
     private TextView btnForgotPassword,btnLogin,btnSignUp;
+    private View loadingLayout;
+    private SpinKitView progressBar;
 
     /** Called when the activity is first created. */
     @Override
@@ -46,9 +52,24 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
         mContext = this;
         setupUI();
+        setupProgressBar();
+    }
+
+    private void setupProgressBar() {
+        progressBar =  findViewById(R.id.spin_kit);
+        Sprite doubleBounce = new DoubleBounce();
+        progressBar.setIndeterminateDrawable(doubleBounce);
+    }
+
+    public void showProgress(){
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+    public void hideProgress(){
+        loadingLayout.setVisibility(View.GONE);
     }
 
     public void setupUI(){
+        loadingLayout = findViewById(R.id.loadingLayout);
         etEmail =  findViewById(R.id.et_email);
         etPassword =  findViewById(R.id.et_password);
         btnForgotPassword =  findViewById(R.id.btn_forgot_password);
@@ -78,10 +99,12 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void performSignIn(String email, String password){
+        showProgress();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        hideProgress();
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
@@ -99,13 +122,22 @@ public class SignInActivity extends AppCompatActivity {
 
                         // ...
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideProgress();
+                Toast.makeText(mContext, "Error Occurred.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void resetPassword(String email){
+        showProgress();
         mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                hideProgress();
                 if (task.isSuccessful()) {
                     Toast.makeText(mContext, "Reset link sent to your email", Toast.LENGTH_LONG)
                             .show();
@@ -114,10 +146,18 @@ public class SignInActivity extends AppCompatActivity {
                             .show();
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideProgress();
+                Toast.makeText(mContext, "Error Occurred", Toast.LENGTH_LONG)
+                        .show();
+            }
         });
     }
 
     public void showPasswordDialog(final Context context){
+
         try {
             LayoutInflater li = LayoutInflater.from(context);
             View promptsView  = null;

@@ -220,7 +220,10 @@
             </LinearLayout>
         </LinearLayout>
 
-
+        <include
+            android:id="@+id/loadingLayout"
+            layout="@layout/view_loading"
+            android:visibility="gone" />
 
 
     </RelativeLayout>

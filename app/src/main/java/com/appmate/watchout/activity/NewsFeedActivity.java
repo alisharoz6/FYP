@@ -9,16 +9,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.appmate.watchout.R;
 import com.appmate.watchout.adapter.NewsFeedAdapter;
 import com.appmate.watchout.model.Data;
 import com.appmate.watchout.model.Location;
+import com.appmate.watchout.singleton.MySingleton;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
@@ -30,12 +36,19 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
+import static com.appmate.watchout.util.Constants.FCM_API;
+import static com.appmate.watchout.util.Constants.FCM_TOPIC;
+import static com.appmate.watchout.util.Constants.contentType;
+import static com.appmate.watchout.util.Constants.serverKey;
 
 public class NewsFeedActivity extends AppCompatActivity {
 
@@ -176,20 +189,34 @@ public class NewsFeedActivity extends AppCompatActivity {
                 .update("posts", data).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                if(clickType.equalsIgnoreCase("alert"))
+                    Toast.makeText(NewsFeedActivity.this, "Alert Marked!",  Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(NewsFeedActivity.this, "Report Marked!",  Toast.LENGTH_SHORT).show();
                 if(finalReportCount >5){
                     deleteEvent(mynewMap,index);
+                    Toast.makeText(NewsFeedActivity.this, "Event Deleted!",
+                            Toast.LENGTH_SHORT).show();
                 }
                 else if(finalAlertCount >5){
                     //Trigger Firebase Message Event
+                    Data data = getDataFromMap(mynewMap);
+                    if(data!=null){
+                        createNotification(data);
+                        Toast.makeText(NewsFeedActivity.this, "Alert Generated!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(NewsFeedActivity.this, "Alert Failed!",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
                 hideProgress();
-                Toast.makeText(NewsFeedActivity.this, "Data Update Success!",
-                        Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(NewsFeedActivity.this, "Data Failed!",
+                Toast.makeText(NewsFeedActivity.this, "Update Data Failed!",
                         Toast.LENGTH_SHORT).show();
                 hideProgress();
             }
@@ -230,6 +257,16 @@ public class NewsFeedActivity extends AppCompatActivity {
         hideProgress();
     }
 
+    public Data getDataFromMap(HashMap map) {
+            Location location = null;
+            if(map.get("location") != null){
+                HashMap locationMap = (HashMap) map.get("location");
+                location =  new Location( (double) locationMap.get("latitude") , (double) locationMap.get("longitude"));
+            }
+            return  new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("serverity")
+                    , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount"));
+    }
+
     public void setupTitleBar(){
         btnMenu = findViewById(R.id.btn_menu);
         btnMenu.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +293,6 @@ public class NewsFeedActivity extends AppCompatActivity {
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, MainActivity.class));
                 finish();
             }
@@ -265,15 +301,14 @@ public class NewsFeedActivity extends AppCompatActivity {
         btnMenuNewsFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 btnMenu.performClick();
+                loadDataFromFB();
             }
         });
         btnMenuSettings = findViewById(R.id.btnMenuSettings);
         btnMenuSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, SettingsActivity.class));
                 finish();
             }
@@ -282,7 +317,6 @@ public class NewsFeedActivity extends AppCompatActivity {
         btnMenuHelpAboutUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, HelpContactActivity.class));
                 finish();
             }
@@ -291,12 +325,56 @@ public class NewsFeedActivity extends AppCompatActivity {
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 logoutUser();
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, SignInActivity.class));
                 finish();
             }
         });
+    }
 
+    private void sendNotification(JSONObject notification) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(NewsFeedActivity.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void createNotification(Data data){
+//        TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            if( data.getType()!=null) notifcationBody.put("title", data.getType());
+            if( data.getEvent()!=null) notifcationBody.put("message", data.getEvent());
+            if( mAuth.getCurrentUser()!=null) notifcationBody.put("createdBy" , mAuth.getCurrentUser().getUid());
+            if( data.getLocation()!=null) notifcationBody.put("lat",data.getLocation().getLatitude());
+            if( data.getLocation()!=null) notifcationBody.put("lng",data.getLocation().getLongitude());
+            notification.put("to", FCM_TOPIC);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage() );
+        }
+        sendNotification(notification);
     }
 }

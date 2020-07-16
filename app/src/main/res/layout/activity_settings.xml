@@ -70,6 +70,10 @@
                 android:id="@+id/menuLayout"
                 layout="@layout/layout_menu"
                 android:visibility="gone"/>
+            <include
+                android:id="@+id/loadingLayout"
+                layout="@layout/view_loading"
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
 

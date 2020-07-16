@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.appmate.watchout.util.Constants.radiusInMeters;
 
 
 public class AppUtil {
@@ -188,5 +191,24 @@ public class AppUtil {
     public static int getImage(Context context, String imageName ) {
         int drawableResourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
         return drawableResourceId;
+    }
+
+    public static boolean checkLocationWithInRadius(com.appmate.watchout.model.Location oldPosition, com.appmate.watchout.model.Location currentPosition){
+        float[] distance = new float[1];
+        Location.distanceBetween(oldPosition.getLatitude(), oldPosition.getLongitude(),
+                currentPosition.getLatitude(), currentPosition.getLongitude(), distance);
+        if(distance[0] > radiusInMeters ){
+            return false;
+            //Outside, distance from center
+//            Toast.makeText(getBaseContext(),
+//                    "Outside, distance from center: " + distance[0] + " radius: " + radiusInMeters,
+//                    Toast.LENGTH_LONG).show();
+        } else {
+            return true;
+            //Inside, distance from center
+//            Toast.makeText(getBaseContext(),
+//                    "Inside, distance from center: " + distance[0] + " radius: " + radiusInMeters ,
+//                    Toast.LENGTH_LONG).show();
+        }
     }
 }

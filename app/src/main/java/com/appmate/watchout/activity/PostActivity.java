@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.appmate.watchout.util.AppUtil.hasPermissions;
 import static com.appmate.watchout.util.Constants.GALLERY_REQUEST_CODE;
@@ -96,6 +96,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     /*Camera Gallery*/
     private String cameraFilePath;
+    private String videoilePath;
+
     /**/
     private BubbleSeekBar seek;
     private CheckBox cb_theft, cb_murder, cb_fire, cb_terror, cb_natural, cb_other;
@@ -249,56 +251,29 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void createIncidentPost() {
-        showProgress();
         String uuid = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         //Event Details
         postToCreate.setEvent(et_detail.getText().toString());
-        //Location
-        postToCreate.getLocation();
+
         postToCreate.setSeverity(getSeekBarValue());
         postToCreate.setType(incidentType);
         postToCreate.setId(uuid);
+        //Location
+        if(postToCreate.getLocation()==null){
+            Toast.makeText(PostActivity.this, "Please provide location!",
+                    Toast.LENGTH_SHORT).show();
+        }
         //Attached Image/Video
-        if(cameraFilePath!=null)
+        else if(cameraFilePath!=null){
+            showProgress();
             uploadFile(cameraFilePath, ".jpg", uuid, postToCreate);
+        }
+        else Toast.makeText(PostActivity.this, "Please provide Image or Video!", Toast.LENGTH_SHORT).show();
 //        postData(postToCreate);
     }
 
     private void postData(Data data) {
 
-//        DocumentReference contact = db.collection("events").document("post");
-//        contact.update("eventName", data.getEvent());
-//        contact.update("image", data.getImage());
-//        contact.update("video", data.getVideo());
-//        contact.update("location", data.getLocation());
-//        contact.update("reportCount", data.getReportCount());
-//        contact.update("alertCount", data.getAlertCount());
-//        contact.update("severity", data.getSeverity());
-//        contact.update("type", data.getType());
-//        contact.update("email", data.getUserEmail());
-//        contact.update("userId", data.getUserId());
-//        contact.update("userName", data.getUserName())
-//        .addOnSuccessListener(new OnSuccessListener < Void > () {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                Toast.makeText(PostActivity.this, "Updated Successfully",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        })
-//        .addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Toast.makeText(PostActivity.this, "Updated Failed",
-//                        Toast.LENGTH_SHORT).show();
-//                System.out.println("Result Update :: "+e);
-//            }
-//        });
-
-//        FieldValue.arrayUnion(mAuth.getCurrentUser().getUid())
-
-//        List<Data> dataList = new ArrayList<>();
-        //        dataList.add(data);
-//        map.put("0", dataList);
         Map<String, Object> map = new HashMap<>();
         map.put("id" , data.getId());
         map.put("eventName", data.getEvent());
@@ -406,7 +381,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     iv_event.setImageURI(Uri.parse(cameraFilePath));
                     break;
                 case VIDEO_REQUEST_CODE:
-//                    vv_event.setVisibility(View.VISIBLE);
+                    vv_event.setVisibility(View.VISIBLE);
                     vv_event.setVideoURI(Uri.parse(cameraFilePath));
                     break;
                 case MAP_BUTTON_REQUEST_CODE:
@@ -462,7 +437,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 PostActivity.this.startActivity(new Intent(PostActivity.this, MainActivity.class));
                 finish();
             }
@@ -471,7 +445,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuNewsFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 PostActivity.this.startActivity(new Intent(PostActivity.this, NewsFeedActivity.class));
                 finish();
             }
@@ -480,7 +453,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 PostActivity.this.startActivity(new Intent(PostActivity.this, SettingsActivity.class));
                 finish();
             }
@@ -489,7 +461,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuHelpAboutUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 PostActivity.this.startActivity(new Intent(PostActivity.this, HelpContactActivity.class));
                 finish();
             }
@@ -498,7 +469,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 logoutUser();
                 PostActivity.this.startActivity(new Intent(PostActivity.this, SignInActivity.class));
                 finish();

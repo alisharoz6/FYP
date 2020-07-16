@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -13,44 +12,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.appmate.watchout.R;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.libraries.places.api.Places;
-import com.google.maps.GeoApiContext;
-import com.schibstedspain.leku.LekuPoi;
 import com.schibstedspain.leku.LocationPickerActivity;
-import com.schibstedspain.leku.geocoder.GeocoderPresenter;
-import com.schibstedspain.leku.geocoder.GeocoderRepository;
 import com.schibstedspain.leku.geocoder.GeocoderViewInterface;
-import com.schibstedspain.leku.geocoder.GoogleGeocoderDataSource;
-import com.schibstedspain.leku.geocoder.places.GooglePlacesDataSource;
-import com.schibstedspain.leku.geocoder.timezone.GoogleTimeZoneDataSource;
-import com.schibstedspain.leku.locale.SearchZoneRect;
-import com.schibstedspain.leku.utils.ReactiveLocationProvider;
+
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import kotlin.Pair;
 
-import static com.appmate.watchout.MyApp.logoutUser;
+import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
-import static com.schibstedspain.leku.LocationPickerActivityKt.ADDRESS;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LATITUDE;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LEKU_POI;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LOCATION_ADDRESS;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LONGITUDE;
-import static com.schibstedspain.leku.LocationPickerActivityKt.TIME_ZONE_DISPLAY_NAME;
-import static com.schibstedspain.leku.LocationPickerActivityKt.TIME_ZONE_ID;
-import static com.schibstedspain.leku.LocationPickerActivityKt.TRANSITION_BUNDLE;
 import static com.schibstedspain.leku.LocationPickerActivityKt.ZIPCODE;
 
 public class LocationActivity extends AppCompatActivity implements LocationListener, GeocoderViewInterface {
@@ -176,7 +160,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 LocationActivity.this.startActivity(new Intent(LocationActivity.this, MainActivity.class));
                 finish();
             }
@@ -185,7 +168,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         btnMenuNewsFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 btnMenu.performClick();
             }
         });
@@ -193,7 +175,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         btnMenuSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 LocationActivity.this.startActivity(new Intent(LocationActivity.this, SettingsActivity.class));
                 finish();
             }
@@ -202,7 +183,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         btnMenuHelpAboutUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 LocationActivity.this.startActivity(new Intent(LocationActivity.this, HelpContactActivity.class));
                 finish();
             }
@@ -211,7 +191,6 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 logoutUser();
                 LocationActivity.this.startActivity(new Intent(LocationActivity.this, SignInActivity.class));
                 finish();

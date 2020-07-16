@@ -3,17 +3,37 @@ package com.appmate.watchout.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.appmate.watchout.R;
+import com.appmate.watchout.singleton.MySingleton;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
-import static com.appmate.watchout.MyApp.logoutUser;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
+import static com.appmate.watchout.util.Constants.FCM_API;
+import static com.appmate.watchout.util.Constants.FCM_TOPIC;
+import static com.appmate.watchout.util.Constants.contentType;
+import static com.appmate.watchout.util.Constants.serverKey;
 
 public class HelpContactActivity extends AppCompatActivity {
 
@@ -25,6 +45,7 @@ public class HelpContactActivity extends AppCompatActivity {
     private TextView activityTitle;
     private TextView tvUsername,tvEmail,btnMenuHome,btnMenuNewsFeed,btnMenuSettings,btnMenuHelpAboutUs,btnMenuLogout;
     private TextView tvContactEmail,tvAboutUs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +54,7 @@ public class HelpContactActivity extends AppCompatActivity {
         setupUI();
         setupTitleBar();
         setupMenu();
+
     }
 
     public void setupUI(){
@@ -68,7 +90,6 @@ public class HelpContactActivity extends AppCompatActivity {
         btnMenuHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, MainActivity.class));
                 finish();
             }
@@ -77,7 +98,6 @@ public class HelpContactActivity extends AppCompatActivity {
         btnMenuNewsFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, NewsFeedActivity.class));
                 finish();
 
@@ -87,7 +107,6 @@ public class HelpContactActivity extends AppCompatActivity {
         btnMenuSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, SettingsActivity.class));
                 finish();
 
@@ -97,7 +116,6 @@ public class HelpContactActivity extends AppCompatActivity {
         btnMenuHelpAboutUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 btnMenu.performClick();
             }
         });
@@ -105,7 +123,6 @@ public class HelpContactActivity extends AppCompatActivity {
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working", Toast.LENGTH_LONG).show();
                 logoutUser();
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, SignInActivity.class));
                 finish();
