@@ -79,20 +79,6 @@ public class NewsFeedActivity extends AppCompatActivity {
         setupTitleBar();
         setupMenu();
         setupProgressBar();
-        btn_data = findViewById(R.id.btn_data);
-        btn_data.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateData(0, "alert");
-            }
-        });
-        btn_data2 = findViewById(R.id.btn_data2);
-        btn_data2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateData(0, "report");
-            }
-        });
     }
 
     private void setupProgressBar() {

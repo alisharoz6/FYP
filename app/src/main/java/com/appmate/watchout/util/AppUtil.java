@@ -24,34 +24,6 @@ import static com.appmate.watchout.util.Constants.radiusInMeters;
 
 public class AppUtil {
 
-
-    public static String AssetJSONFile (String filename, Context context) throws IOException {
-        AssetManager manager = context.getAssets();
-        InputStream file = manager.open(filename);
-        byte[] formArray = new byte[file.available()];
-        file.read(formArray);
-        file.close();
-        return new String(formArray);
-    }
-    public  static String loadJSONFromAsset(String fileName, Context context) {
-        String json;
-        try {
-            json = AssetJSONFile(fileName, context);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-//    £
-    public static int getColor(Context context, int color){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return context.getColor(color);
-        }
-        return context.getResources().getColor(color);
-    }
-
     public static boolean validateSignInForm(String email, String password, Context context) {
 
         if (TextUtils.isEmpty(email)) {
@@ -145,53 +117,7 @@ public class AppUtil {
         }
         return true;
     }
-//    public static String getAccessToken(Context context){
-//        String userModelStr = UserSharedPreferences.getString(context,UserSharedPreferences.USER_MODEL);
-//        if (TextUtils.isEmpty(userModelStr))return userModelStr;
-//
-//        return "";
-//    }
 
-//    public static void reduceMarginsInTabs(TabLayout tabLayout, int marginOffset) {
-//
-//        View tabStrip = tabLayout.getChildAt(0);
-//        if (tabStrip instanceof ViewGroup) {
-//            ViewGroup tabStripGroup = (ViewGroup) tabStrip;
-//            for (int i = 0; i < ((ViewGroup) tabStrip).getChildCount(); i++) {
-//                View tabView = tabStripGroup.getChildAt(i);
-//                if (tabView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-//                    ((ViewGroup.MarginLayoutParams) tabView.getLayoutParams()).leftMargin = marginOffset;
-//                    ((ViewGroup.MarginLayoutParams) tabView.getLayoutParams()).rightMargin = marginOffset;
-//                }
-//            }
-//            tabLayout.requestLayout();
-//        }
-//    }
-
-    public static boolean hasHttp(String value){
-        boolean hasHttp =false;
-        if(value.contains("http") || value.contains("https"))
-            hasHttp = true;
-        return hasHttp;
-    }
-
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public static boolean hasSpecialCharacters(String value){
-        Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(value);
-        return m.find();
-    }
-
-    public static int getImage(Context context, String imageName ) {
-        int drawableResourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
-        return drawableResourceId;
-    }
 
     public static boolean checkLocationWithInRadius(com.appmate.watchout.model.Location oldPosition, com.appmate.watchout.model.Location currentPosition){
         float[] distance = new float[1];
@@ -199,16 +125,8 @@ public class AppUtil {
                 currentPosition.getLatitude(), currentPosition.getLongitude(), distance);
         if(distance[0] > radiusInMeters ){
             return false;
-            //Outside, distance from center
-//            Toast.makeText(getBaseContext(),
-//                    "Outside, distance from center: " + distance[0] + " radius: " + radiusInMeters,
-//                    Toast.LENGTH_LONG).show();
         } else {
             return true;
-            //Inside, distance from center
-//            Toast.makeText(getBaseContext(),
-//                    "Inside, distance from center: " + distance[0] + " radius: " + radiusInMeters ,
-//                    Toast.LENGTH_LONG).show();
         }
     }
 }

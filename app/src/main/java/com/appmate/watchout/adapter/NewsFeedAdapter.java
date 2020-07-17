@@ -56,7 +56,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
             holders.add(holder);
         }
         final Data data = dataList.get(position);
-//        Glide.with(mContext).load(AppUtil.getImage(mContext,"season_one_bg")).into(holder.imageView);
         holder.tv_userName.setText(data.getUserName());
         holder.tv_post_details.setText(data.getEvent());
         holder.btn_alert.setOnClickListener(new View.OnClickListener() {

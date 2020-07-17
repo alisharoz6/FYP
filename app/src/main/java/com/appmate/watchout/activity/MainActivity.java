@@ -64,40 +64,13 @@ public class MainActivity extends AppCompatActivity {
         setupMenu();
     }
 
-    public void uploadImageVideo(){
-
-        StorageReference imagesRef = storageRef.child("images");
-        StorageReference spaceRef = storageRef.child("images/space.jpg");
-
-
-        // Points to the root reference
-        storageRef = storage.getReference();
-
-        // Points to "images"
-        imagesRef = storageRef.child("images");
-
-        // Points to "images/space.jpg"
-        // Note that you can use variables to create child values
-        String fileName = "space.jpg";
-        spaceRef = imagesRef.child(fileName);
-
-        // File path is "images/space.jpg"
-        String path = spaceRef.getPath();
-
-        // File name is "space.jpg"
-        String name = spaceRef.getName();
-
-        // Points to "images"
-        imagesRef = spaceRef.getParent();
-    }
-
     public void setupUI(){
         menuLayout = findViewById(R.id.menuLayout);
         btnCreateAlert = findViewById(R.id.btnCreateAlert);
         btnCreateAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.startActivity(new Intent(MainActivity.this, PostActivity  .class));
+                MainActivity.this.startActivity(new Intent(MainActivity.this, PostActivity .class));
             }
         });
     }
