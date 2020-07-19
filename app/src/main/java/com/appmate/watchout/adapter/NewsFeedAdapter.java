@@ -25,13 +25,16 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
     private ArrayList<MyViewHolder> holders = new ArrayList<>();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tv_userName,tv_post_details;
+        public TextView tv_userName,tv_post_details,btn_img_vid,tv_type,tv_severity;
         public Button btn_alert,btn_report;
 
         public MyViewHolder(View view) {
             super(view);
             tv_userName =  view.findViewById(R.id.tv_userName);
             tv_post_details =  view.findViewById(R.id.tv_post_details);
+            btn_img_vid = view.findViewById(R.id.btn_img_vid);
+            tv_type = view.findViewById(R.id.tv_type);
+            tv_severity = view.findViewById(R.id.tv_severity);
             btn_alert =  view.findViewById(R.id.btn_alert);
             btn_report =  view.findViewById(R.id.btn_report);
         }
@@ -59,6 +62,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
         final Data data = dataList.get(position);
         holder.tv_userName.setText(data.getUserName());
         holder.tv_post_details.setText(data.getEvent());
+        holder.tv_severity.setText(data.getSeverity());
+        holder.tv_type.setText(data.getType());
         holder.btn_alert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,14 +82,23 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
                 }
             }
         });
+        holder.btn_img_vid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Implement Report
+                if (mContext instanceof NewsFeedActivity) {
+                    ((NewsFeedActivity)mContext).previewImageVideo(data);
+                }
+            }
+        });
         if(data.getAlerterList() != null && data.getAlerterList().size() > 0){
             if(data.getAlerterList().contains(SplashActivity.mAuth.getCurrentUser().getUid())){
-                holder.btn_alert.setEnabled(false);
+//                holder.btn_alert.setEnabled(false);
             }
         }
         if(data.getReporterList() != null && data.getReporterList().size() > 0){
             if(data.getReporterList().contains(SplashActivity.mAuth.getCurrentUser().getUid())){
-                holder.btn_report.setEnabled(false);
+//                holder.btn_report.setEnabled(false);
             }
         }
     }

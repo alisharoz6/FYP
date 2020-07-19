@@ -8,9 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -252,7 +257,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 HashMap locationMap = (HashMap) map.get("location");
                 location =  new Location( (double) locationMap.get("latitude") , (double) locationMap.get("longitude"));
             }
-            feeds.add(new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("serverity")
+            feeds.add(new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("severity")
                     , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount"), (ArrayList<String>) map.get("alerterList") , (ArrayList<String>) map.get("reporterList")));
         }
         rvNewsFeed.getAdapter().notifyDataSetChanged();
@@ -265,7 +270,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 HashMap locationMap = (HashMap) map.get("location");
                 location =  new Location( (double) locationMap.get("latitude") , (double) locationMap.get("longitude"));
             }
-            return  new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("serverity")
+            return  new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("severity")
                     , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount"), (ArrayList<String>) map.get("alerterList") , (ArrayList<String>) map.get("reporterList"));
     }
 
@@ -379,4 +384,19 @@ public class NewsFeedActivity extends AppCompatActivity {
         }
         sendNotification(notification);
     }
+    public void previewImageVideo(Data data){
+        String link = "";
+        if(data.getVideo()!=null){
+            link = data.getVideo();
+        }
+        else if(data.getImage()!=null){
+            link = data.getImage();
+        }
+        Intent intent = new Intent(mContext, WebviewActivity.class);
+        intent.putExtra("link", link);
+        mContext.startActivity(intent);
+    }
+
+
+
 }

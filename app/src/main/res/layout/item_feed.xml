@@ -11,7 +11,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_edges">
+            android:background="@drawable/round_edges_white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,6 +68,89 @@
                                     />
 
                             </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginBottom="@dimen/_5sdp">
+
+                                <TextView
+                                    android:id="@+id/btn_img_vid"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/clickImageVideo"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/_12sdp"
+                                    android:layout_marginBottom="@dimen/_5sdp"/>
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:weightSum="2"
+                                android:orientation="horizontal"
+                                android:visibility="visible">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:layout_marginBottom="@dimen/_5sdp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Severity"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:layout_marginBottom="@dimen/_5sdp"/>
+                                    <TextView
+                                        android:id="@+id/tv_severity"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_30sdp"
+                                        android:textColor="@color/white"
+                                        android:textColorHint="#000"
+                                        android:gravity="center"
+                                        android:textSize="@dimen/_12sdp"
+                                        />
+
+                                </LinearLayout>
+
+                                <Space
+                                    android:layout_width="@dimen/_20sdp"
+                                    android:layout_height="match_parent" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:layout_marginBottom="@dimen/_5sdp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Incident Type"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:layout_marginBottom="@dimen/_5sdp"/>
+                                    <TextView
+                                        android:id="@+id/tv_type"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_30sdp"
+                                        android:textColor="@color/white"                                        android:textColorHint="#000"
+                                        android:gravity="center"
+                                        android:textSize="@dimen/_12sdp"
+                                        />
+
+                                </LinearLayout>
+                            </LinearLayout>
+
+
+
 
 
                             <LinearLayout
