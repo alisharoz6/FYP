@@ -93,12 +93,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
         });
         if(data.getAlerterList() != null && data.getAlerterList().size() > 0){
             if(data.getAlerterList().contains(SplashActivity.mAuth.getCurrentUser().getUid())){
-//                holder.btn_alert.setEnabled(false);
+                holder.btn_alert.setEnabled(false);
             }
         }
         if(data.getReporterList() != null && data.getReporterList().size() > 0){
             if(data.getReporterList().contains(SplashActivity.mAuth.getCurrentUser().getUid())){
-//                holder.btn_report.setEnabled(false);
+                holder.btn_report.setEnabled(false);
             }
         }
     }

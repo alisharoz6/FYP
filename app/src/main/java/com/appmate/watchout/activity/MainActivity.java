@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MainActivity.this.startActivity(new Intent(MainActivity.this, NewsFeedActivity.class));
+                btnMenu.performClick();
             }
         });
         btnMenuSettings = findViewById(R.id.btnMenuSettings);
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MainActivity.this.startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                btnMenu.performClick();
             }
         });
         btnMenuHelpAboutUs = findViewById(R.id.btnMenuHelpAboutUs);
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MainActivity.this.startActivity(new Intent(MainActivity.this, HelpContactActivity.class));
+                btnMenu.performClick();
             }
         });
         btnMenuLogout = findViewById(R.id.btnMenuLogout);
