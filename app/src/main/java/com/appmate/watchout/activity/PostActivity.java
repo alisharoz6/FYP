@@ -100,7 +100,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     /*Camera Gallery*/
     private String cameraFilePath;
-    private String videoilePath;
+    private Uri    mediaFilePath;
 
     /**/
     private BubbleSeekBar seek;
@@ -343,7 +343,12 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         StorageReference alertImages = storageRef.child("alertImages/" + event + fileType);
         InputStream stream = null;
         try {
-            stream = new FileInputStream(new File(filePath.replace("file:", "")));
+            if(filePath.contains("media")){
+                stream =  getContentResolver().openInputStream(mediaFilePath);
+            }
+            else{
+                stream = new FileInputStream(new File(filePath.replace("file:", "")));
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -412,6 +417,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     //data.getData returns the content URI for the selected Image
                     Uri selectedImage = data.getData();
                     cameraFilePath = selectedImage.toString();
+                    mediaFilePath = selectedImage;
                     iv_event.setVisibility(View.VISIBLE);
                     iv_event.setImageURI(Uri.parse(cameraFilePath));
 //                    File outputFile = new File("YOUR DESIRED FILE PATH");
