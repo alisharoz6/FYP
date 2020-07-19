@@ -99,7 +99,10 @@ public class NewsFeedActivity extends AppCompatActivity {
         loadingLayout = findViewById(R.id.loadingLayout);
 
         rvNewsFeed = findViewById(R.id.rv_feed);
-        rvNewsFeed.setLayoutManager(new LinearLayoutManager(mContext));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+        rvNewsFeed.setLayoutManager(mLayoutManager);
         rvNewsFeed.setItemAnimator(new DefaultItemAnimator());
         rvNewsFeed.setAdapter(new NewsFeedAdapter(mContext,feeds));
         
