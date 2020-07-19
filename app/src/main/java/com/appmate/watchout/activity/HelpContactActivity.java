@@ -83,7 +83,7 @@ public class HelpContactActivity extends AppCompatActivity {
 
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
-        tvEmail = findViewById(R.id.tvUsername);
+        tvEmail = findViewById(R.id.tvEmail);
         tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
         tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);

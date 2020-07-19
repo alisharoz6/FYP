@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.appmate.watchout.R;
 import com.appmate.watchout.activity.MainActivity;
+import com.appmate.watchout.activity.SplashActivity;
 import com.appmate.watchout.model.Location;
 import com.appmate.watchout.util.AppUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -56,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(!AppUtil.checkLocationWithInRadius(oldLocation,currentLocation)){
             return;
         }
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, SplashActivity.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
       
@@ -69,6 +70,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 

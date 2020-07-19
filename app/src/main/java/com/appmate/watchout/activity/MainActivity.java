@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
-        tvEmail = findViewById(R.id.tvUsername);
+        tvEmail = findViewById(R.id.tvEmail);
         tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
         tvEmail.setText(mAuth.getCurrentUser().getEmail());
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     private void requestCurrentLocation() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
-            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, PERMISSION_ALL);
+            ActivityCompat.requestPermissions(MainActivity.this, LOCATION_PERMISSIONS, PERMISSION_ALL);
         } else {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;

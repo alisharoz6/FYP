@@ -18,7 +18,7 @@ public class Constants {
     public static final  String contentType = "application/json";
     public static  String firebaseToken = "";
     public static Location currentLocation ;
-    public static double radiusInMeters = 5.0*1000.0; //1 KM = 1000 Meter
+    public static double radiusInMeters = 1.0*1000.0; //1 KM = 1000 Meter
 
 
     public static final int PERMISSION_ALL = 1;

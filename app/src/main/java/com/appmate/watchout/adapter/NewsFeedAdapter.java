@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appmate.watchout.R;
 import com.appmate.watchout.activity.NewsFeedActivity;
+import com.appmate.watchout.activity.SplashActivity;
 import com.appmate.watchout.model.Data;
 
 import java.util.ArrayList;
@@ -76,6 +77,16 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.MyView
                 }
             }
         });
+        if(data.getAlerterList() != null && data.getAlerterList().size() > 0){
+            if(data.getAlerterList().contains(SplashActivity.mAuth.getCurrentUser().getUid())){
+                holder.btn_alert.setEnabled(false);
+            }
+        }
+        if(data.getReporterList() != null && data.getReporterList().size() > 0){
+            if(data.getReporterList().contains(SplashActivity.mAuth.getCurrentUser().getUid())){
+                holder.btn_report.setEnabled(false);
+            }
+        }
     }
 
     @Override

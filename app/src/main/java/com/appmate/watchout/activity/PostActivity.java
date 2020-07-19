@@ -3,10 +3,13 @@ package com.appmate.watchout.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -69,6 +72,7 @@ import static com.appmate.watchout.util.Constants.MAP_BUTTON_REQUEST_CODE;
 import static com.appmate.watchout.util.Constants.PERMISSIONS;
 import static com.appmate.watchout.util.Constants.PERMISSION_ALL;
 import static com.appmate.watchout.util.Constants.VIDEO_REQUEST_CODE;
+import static com.appmate.watchout.util.Constants.currentLocation;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LATITUDE;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LOCATION_ADDRESS;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LONGITUDE;
@@ -185,7 +189,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (!hasPermissions(mContext, PERMISSIONS)) {
                     ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
-                } else {
+                }
+                else {
                     imageFromGallery();
                 }
             }
@@ -208,9 +213,19 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
                     ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
-                } else {
+                }
+                else if(!isLocationEnabled(mContext)){
+                    //Request GPS
+                }
+                else {
+                    double  defaultLat = 31.5204;
+                    double  defailtLng = 74.3587;
+                    if(currentLocation != null){
+                        defaultLat = currentLocation.getLatitude();
+                        defailtLng = currentLocation.getLongitude();
+                    }
                     Intent locationPickerIntent = new LocationPickerActivity.Builder()
-                            .withLocation(31.5204, 74.3587)
+                            .withLocation(defaultLat, defailtLng)
                             .withGeolocApiKey("AIzaSyDgIjrCXSxiH31ghL2fffio6Os7Y1X2JXQ")
                             .withSearchZone("en_PK")
 //                        .withSearchZone(new SearchZoneRect(LatLng(26.525467, -18.910366), LatLng(43.906271, 5.394197)))
@@ -250,6 +265,20 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    public static boolean isLocationEnabled(Context context)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // This is new method provided in API 28
+            LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            return lm.isLocationEnabled();
+        } else {
+            // This is Deprecated in API 28
+            int mode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                    Settings.Secure.LOCATION_MODE_OFF);
+            return  (mode != Settings.Secure.LOCATION_MODE_OFF);
+        }
+    }
+
     public void createIncidentPost() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         //Event Details
@@ -287,8 +316,11 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         map.put("email", mAuth.getCurrentUser().getEmail());
         map.put("userId", mAuth.getCurrentUser().getUid());
         map.put("userName", mAuth.getCurrentUser().getDisplayName());
+        map.put("alerterList", new ArrayList<String>());
+        map.put("reporterList", new ArrayList<String>());
 
-            db.collection("events").document("post").update("posts",FieldValue.arrayUnion(map)).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        db.collection("events").document("post").update("posts",FieldValue.arrayUnion(map)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 hideProgress();
@@ -315,55 +347,61 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        UploadTask uploadTask = alertImages.putStream(stream);
+        if(stream != null){
+            UploadTask uploadTask = alertImages.putStream(stream);
 
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Toast.makeText(mContext, "Failure", Toast.LENGTH_SHORT).show();
-                hideProgress();
+            // Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Toast.makeText(mContext, "Failure", Toast.LENGTH_SHORT).show();
+                    hideProgress();
 
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                // get the image Url of the file uploaded
-                alertImages.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        // getting image uri and converting into string
-                        System.out.println(uri.toString());
-                        if(fileType.equalsIgnoreCase(".jpg")){
-                            data.setImage(uri.toString());
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                    // get the image Url of the file uploaded
+                    alertImages.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            // getting image uri and converting into string
+                            System.out.println(uri.toString());
+                            if(fileType.equalsIgnoreCase(".jpg")){
+                                data.setImage(uri.toString());
+                            }
+                            else{
+                                data.setVideo(uri.toString());
+                            }
+                            Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                            //Call Post Event To DB Here
+                            postData(data);
                         }
-                        else{
-                            data.setVideo(uri.toString());
-                        }
-                        Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
-                        //Call Post Event To DB Here
-                        postData(data);
-                    }
-                });
-            }
-        })
-        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    });
+                }
+            })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 //                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 //                Toast.makeText(mContext,"Upload is " + progress + "% done",Toast.LENGTH_SHORT).show();
-            }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                        }
+                    }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
 //                System.out.println("Upload is paused");
-            }
-        });
+                }
+            });
+        }
+        else{
+            Toast.makeText(mContext, "File Not Found", Toast.LENGTH_SHORT).show();
+            hideProgress();
+        }
     }
-
+//    content://media/external/images/media/79445,file:///storage/emulated/0/DCIM/Camera/JPEG_20200719_203321_3591027173808915302.jpg,mContext.getContentResolver().openInputStream(data.getData())
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -373,8 +411,23 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 case GALLERY_REQUEST_CODE:
                     //data.getData returns the content URI for the selected Image
                     Uri selectedImage = data.getData();
+                    cameraFilePath = selectedImage.toString();
                     iv_event.setVisibility(View.VISIBLE);
-                    iv_event.setImageURI(selectedImage);
+                    iv_event.setImageURI(Uri.parse(cameraFilePath));
+//                    File outputFile = new File("YOUR DESIRED FILE PATH");
+//
+//                    InputStream stream = null;
+//                    try {
+//                        stream = new FileInputStream("/"+cameraFilePath);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if(stream==null){
+//                        Toast.makeText(mContext, String.valueOf("Still  Null"), Toast.LENGTH_SHORT).show();
+//                    }
+//                    else{
+//                        Toast.makeText(mContext, String.valueOf("Success"), Toast.LENGTH_SHORT).show();
+//                    }
                     break;
                 case IMAGE_REQUEST_CODE:
                     iv_event.setVisibility(View.VISIBLE);
@@ -404,7 +457,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public String getSeekBarValue() {
-        Toast.makeText(mContext, String.valueOf(seek.getProgress()), Toast.LENGTH_SHORT).show();
         return String.valueOf(seek.getProgress());
     }
 
@@ -430,7 +482,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     public void setupMenu() {
         tvUsername = findViewById(R.id.tvUsername);
-        tvEmail = findViewById(R.id.tvUsername);
+        tvEmail = findViewById(R.id.tvEmail);
         tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
         tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);

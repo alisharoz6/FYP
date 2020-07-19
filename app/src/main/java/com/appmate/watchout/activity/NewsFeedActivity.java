@@ -161,16 +161,28 @@ public class NewsFeedActivity extends AppCompatActivity {
     public void updateAlertReportCount(ArrayList<HashMap<String, Data>> data, HashMap mynewMap, int index, String clickType){
         long reportCount = 0;
         long alertCount = 0;
+        ArrayList<String> alerterList = (ArrayList<String>) mynewMap.get("alerterList");
+        ArrayList<String> reporterList = (ArrayList<String>) mynewMap.get("reporterList");
         if(clickType.equalsIgnoreCase("alert")){
             alertCount = (long) mynewMap.get("alertCount");
             alertCount++;
             mynewMap.put("alertCount", alertCount);
+
+            alerterList.add(mAuth.getCurrentUser().getUid());
+            mynewMap.put("alerterList",alerterList);
+            feeds.get(index).setAlerterList(alerterList);
         }
         else{
             reportCount = (long) mynewMap.get("reportCount");
             reportCount++;
             mynewMap.put("reportCount", reportCount);
+
+            reporterList.add(mAuth.getCurrentUser().getUid());
+            mynewMap.put("reporterList",reporterList);
+            feeds.get(index).setReporterList(reporterList);
         }
+
+
         data.set(index, mynewMap);
         long finalReportCount = reportCount;
         long finalAlertCount = alertCount;
@@ -200,6 +212,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
+                rvNewsFeed.getAdapter().notifyDataSetChanged();
                 hideProgress();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -240,7 +253,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 location =  new Location( (double) locationMap.get("latitude") , (double) locationMap.get("longitude"));
             }
             feeds.add(new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("serverity")
-                    , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount")));
+                    , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount"), (ArrayList<String>) map.get("alerterList") , (ArrayList<String>) map.get("reporterList")));
         }
         rvNewsFeed.getAdapter().notifyDataSetChanged();
         hideProgress();
@@ -253,7 +266,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 location =  new Location( (double) locationMap.get("latitude") , (double) locationMap.get("longitude"));
             }
             return  new Data((String) map.get("id"),(String) map.get("userName"), (String) map.get("userId"), (String)  map.get("userEmail") ,(String)  map.get("eventName"), (String) map.get("video") , (String)  map.get("image"),location ,(String)   map.get("serverity")
-                    , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount"));
+                    , (String) map.get("type") , (long) map.get("alertCount") , (long) map.get("reportCount"), (ArrayList<String>) map.get("alerterList") , (ArrayList<String>) map.get("reporterList"));
     }
 
     public void setupTitleBar(){
@@ -275,7 +288,7 @@ public class NewsFeedActivity extends AppCompatActivity {
 
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
-        tvEmail = findViewById(R.id.tvUsername);
+        tvEmail = findViewById(R.id.tvEmail);
         tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
         tvEmail.setText(mAuth.getCurrentUser().getEmail());
         btnMenuHome = findViewById(R.id.btnMenuHome);

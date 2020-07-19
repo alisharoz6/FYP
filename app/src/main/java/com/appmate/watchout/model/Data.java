@@ -1,6 +1,7 @@
 package com.appmate.watchout.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Data implements Serializable {
     private String  id;
@@ -15,11 +16,13 @@ public class Data implements Serializable {
     private String  type;
     private long  alertCount;
     private long  reportCount;
+    ArrayList<String>   alerterList;
+    ArrayList<String>   reporterList;
 
     public Data() {
     }
 
-    public Data(String id,String userName, String userId, String userEmail, String event, String video, String image, Location location, String serverity, String type, long alertCount, long reportCount) {
+    public Data(String id, String userName, String userId, String userEmail, String event, String video, String image, Location location, String severity, String type, long alertCount, long reportCount, ArrayList<String> alerterList, ArrayList<String> reporterList) {
         this.id = id;
         this.userName = userName;
         this.userId = userId;
@@ -28,10 +31,12 @@ public class Data implements Serializable {
         this.video = video;
         this.image = image;
         this.location = location;
-        this.severity = serverity;
+        this.severity = severity;
         this.type = type;
         this.alertCount = alertCount;
         this.reportCount = reportCount;
+        this.alerterList = alerterList;
+        this.reporterList = reporterList;
     }
 
     public String getId() {
@@ -128,5 +133,21 @@ public class Data implements Serializable {
 
     public void setReportCount(long reportCount) {
         this.reportCount = reportCount;
+    }
+
+    public ArrayList<String> getAlerterList() {
+        return alerterList;
+    }
+
+    public void setAlerterList(ArrayList<String> alerterList) {
+        this.alerterList = alerterList;
+    }
+
+    public ArrayList<String> getReporterList() {
+        return reporterList;
+    }
+
+    public void setReporterList(ArrayList<String> reporterList) {
+        this.reporterList = reporterList;
     }
 }
