@@ -27,6 +27,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
         <!--Firebase Message Service-->
 
         <service
@@ -46,7 +50,8 @@
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
 
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,9 +62,11 @@
         <activity android:name=".activity.NewsFeedActivity" />
         <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:exported="true"/>
         <activity android:name=".activity.LocationActivity" />
-        <activity android:name=".activity.PostActivity" />
+        <activity android:name=".activity.PostActivity"
+            android:exported="true"/>
         <activity android:name=".activity.HelpContactActivity" />
         <activity android:name=".activity.WebviewActivity" />
         <activity

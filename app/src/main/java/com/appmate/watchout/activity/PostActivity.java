@@ -67,6 +67,7 @@ import java.util.UUID;
 import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.appmate.watchout.util.AppUtil.hasPermissions;
+import static com.appmate.watchout.util.AppUtil.isLocationEnabled;
 import static com.appmate.watchout.util.Constants.GALLERY_REQUEST_CODE;
 import static com.appmate.watchout.util.Constants.IMAGE_REQUEST_CODE;
 import static com.appmate.watchout.util.Constants.LOCATION_PERMISSIONS;
@@ -216,10 +217,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
                     ActivityCompat.requestPermissions(PostActivity.this, PERMISSIONS, PERMISSION_ALL);
                 }
-                else if(!isLocationEnabled(mContext)){
-                    //Request GPS
-                }
-                else {
+                else if(isLocationEnabled(mContext)){
                     double  defaultLat = 31.5204;
                     double  defailtLng = 74.3587;
                     if(currentLocation != null){
@@ -244,10 +242,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                             .build(mContext);
                     startActivityForResult(locationPickerIntent, MAP_BUTTON_REQUEST_CODE);
                 }
-
                 // this is optional if you want to return RESULT_OK if you don't set the latitude/longitude and click back button
 //                locationPickerIntent.putExtra("test", "this is a test");
-
             }
         });
         btn_saveEvent = findViewById(R.id.btn_saveEvent);
@@ -267,36 +263,6 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public boolean isLocationEnabled(Context context)
-    {
-        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch(Exception ex) {}
-
-        if(!gps_enabled && !network_enabled) {
-            // notify user
-            new AlertDialog.Builder(context)
-                    .setMessage("Enable Location Server")
-                    .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    }).setNegativeButton("Cancel",null).show();
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
 
     public void createIncidentPost() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();

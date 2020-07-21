@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
-
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
@@ -21,6 +20,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+//        debug {
+//            minifyEnabled false
+//            debuggable true
+//            ext.enableCrashlytics = false
+//            ext.alwaysUpdateBuildId = false
+//        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

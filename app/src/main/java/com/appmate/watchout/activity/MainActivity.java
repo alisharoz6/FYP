@@ -1,7 +1,9 @@
 package com.appmate.watchout.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +31,7 @@ import io.opencensus.tags.Tag;
 import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.appmate.watchout.util.AppUtil.hasPermissions;
+import static com.appmate.watchout.util.AppUtil.isLocationEnabled;
 import static com.appmate.watchout.util.Constants.LOCATION_PERMISSIONS;
 import static com.appmate.watchout.util.Constants.LOCATION_REFRESH_DISTANCE;
 import static com.appmate.watchout.util.Constants.LOCATION_REFRESH_TIME;
@@ -70,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
         btnCreateAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.startActivity(new Intent(MainActivity.this, PostActivity .class));
+                if(isLocationEnabled(mContext)){
+                    MainActivity.this.startActivity(new Intent(MainActivity.this, PostActivity.class));
+                }
             }
         });
     }
@@ -80,11 +86,12 @@ public class MainActivity extends AppCompatActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(menuLayout.getVisibility()==View.VISIBLE){
-                    menuLayout.setVisibility(View.GONE);
-                }
-                else{
-                    menuLayout.setVisibility(View.VISIBLE);
+                if(isLocationEnabled(mContext)) {
+                    if (menuLayout.getVisibility() == View.VISIBLE) {
+                        menuLayout.setVisibility(View.GONE);
+                    } else {
+                        menuLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -141,18 +148,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void requestCurrentLocation() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
             ActivityCompat.requestPermissions(MainActivity.this, LOCATION_PERMISSIONS, PERMISSION_ALL);
+
+
         } else {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                    LOCATION_REFRESH_DISTANCE, mLocationListener);
+            if(isLocationEnabled(mContext)){
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+                        LOCATION_REFRESH_DISTANCE, mLocationListener);
+            }
         }
     }
+
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override

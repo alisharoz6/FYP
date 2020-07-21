@@ -29,7 +29,7 @@ public class Constants {
     };
     public static final String[] LOCATION_PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
     };
 
 }

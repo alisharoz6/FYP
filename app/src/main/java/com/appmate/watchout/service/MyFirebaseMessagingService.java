@@ -54,13 +54,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             double lng= Double.parseDouble(remoteMessage.getData().get("lng"));
             oldLocation = new Location(lat,lng);
         }
-        if(!AppUtil.checkLocationWithInRadius(oldLocation,currentLocation)){
+        System.out.println("currentLocation == "+currentLocation);
+        System.out.println("oldLocation == "+oldLocation);
+        if(oldLocation==null || currentLocation==null || !AppUtil.checkLocationWithInRadius(oldLocation,currentLocation)){
             return;
         }
         final Intent intent = new Intent(this, SplashActivity.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
-      
+
       /*
         Apps targeting SDK 26 or above (Android O) must implement notification channels and add its notifications
         to at least one of them. Therefore, confirm if version is Oreo or higher, then setup notification channel
