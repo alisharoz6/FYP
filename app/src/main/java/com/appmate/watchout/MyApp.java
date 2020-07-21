@@ -3,6 +3,8 @@ package com.appmate.watchout;
 import android.app.Application;
 import android.content.Context;
 
+import com.google.firebase.FirebaseApp;
+
 public class MyApp extends Application {
 
 //    private static Socket socket;
@@ -10,6 +12,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseApp.initializeApp(this);
     }
 
     @Override

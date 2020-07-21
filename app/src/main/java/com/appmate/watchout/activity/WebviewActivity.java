@@ -63,10 +63,14 @@ public class WebviewActivity extends AppCompatActivity  {
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
+//        webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
 //        webSettings.setAllowFileAccess(true);
 //        webSettings.setPluginState(WebSettings.PluginState.ON);
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         myWebView.setWebViewClient(new WebViewClient());
+//        myWebView.setInitialScale(1);
         myWebView.setWebChromeClient(new WebChromeClient());
         myWebView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

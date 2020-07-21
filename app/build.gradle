@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 
 android {
@@ -47,8 +48,11 @@ dependencies {
     /*Material Lib*/
     implementation 'com.google.android.material:material:1.0.0'
 
-    /*Firebase Analytics DB*/
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    // Recommended: Add the Firebase SDK for Google Analytics.
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
+
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
     /*Firebase DB Lib*/
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
     /*Image Lib*/
@@ -59,6 +63,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     // Firebase Cloud Messaging
     implementation 'com.google.firebase:firebase-messaging:20.2.3'
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
+
 
 
     /*Severity Bar*/
