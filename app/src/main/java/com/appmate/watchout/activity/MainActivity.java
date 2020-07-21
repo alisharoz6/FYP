@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setupUI();
         setupTitleBar();
         setupMenu();
+        requestCurrentLocation();
     }
 
     public void setupUI(){
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         btnCreateAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLocationEnabled(mContext)){
+                if(requestCurrentLocation()){
                     MainActivity.this.startActivity(new Intent(MainActivity.this, PostActivity.class));
                 }
             }
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLocationEnabled(mContext)) {
+                if(requestCurrentLocation()) {
                     if (menuLayout.getVisibility() == View.VISIBLE) {
                         menuLayout.setVisibility(View.GONE);
                     } else {
@@ -149,23 +151,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void requestCurrentLocation() {
+    private boolean requestCurrentLocation() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!hasPermissions(mContext, LOCATION_PERMISSIONS)) {
             ActivityCompat.requestPermissions(MainActivity.this, LOCATION_PERMISSIONS, PERMISSION_ALL);
-
-
         } else {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+                return false;
             }
             if(isLocationEnabled(mContext)){
                 mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                         LOCATION_REFRESH_DISTANCE, mLocationListener);
+                return true;
             }
         }
+        return false;
     }
-
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -173,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
             //your code here
             currentLocation =  new com.appmate.watchout.model.Location(location.getLatitude(),location.getLongitude());
             Log.d("Location Changed", "Lat : "+currentLocation.getLatitude() +"|| Lng :"+currentLocation.getLongitude());
+            //Save In Shared Pref
+            SharedPreferences.Editor editor =  getPreferences(MODE_PRIVATE).edit();
+            editor.putString("myLat", String.valueOf(currentLocation.getLatitude()));
+            editor.putString("myLng", String.valueOf(currentLocation.getLongitude()));
+            editor.commit();
         }
 
         @Override

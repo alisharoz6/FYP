@@ -5,12 +5,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -54,11 +56,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             double lng= Double.parseDouble(remoteMessage.getData().get("lng"));
             oldLocation = new Location(lat,lng);
         }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences!=null && !preferences.getString("myLat", "").isEmpty() && !preferences.getString("myLng", "").isEmpty()){
+            Location currentLoc = new Location(Double.valueOf(preferences.getString("myLat", "")) , Double.valueOf(preferences.getString("myLng", "")) );
+            System.out.println("currentLoc == "+currentLoc);
+            //Radius Limitation
+            if(oldLocation==null || currentLoc==null || !AppUtil.checkLocationWithInRadius(oldLocation,currentLoc)){
+                return;
+            }
+        }
+
         System.out.println("currentLocation == "+currentLocation);
         System.out.println("oldLocation == "+oldLocation);
-        if(oldLocation==null || currentLocation==null || !AppUtil.checkLocationWithInRadius(oldLocation,currentLocation)){
-            return;
-        }
+
+
         final Intent intent = new Intent(this, SplashActivity.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
