@@ -181,9 +181,11 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     public void updatePassword(String password){
+        showProgress();
         mAuth.getCurrentUser().updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                hideProgress();
                 if (task.isSuccessful()) {
                     Toast.makeText(mContext, "Password changes successfully", Toast.LENGTH_LONG)
                             .show();
@@ -191,6 +193,11 @@ public class SettingsActivity extends AppCompatActivity {
                     Toast.makeText(mContext, "password not changed", Toast.LENGTH_LONG)
                             .show();
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideProgress();
             }
         });
     }
@@ -201,23 +208,29 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString("ice2", ice2);
         editor.putString("ice3", ice3);
         editor.commit();
+        Toast.makeText(mContext, "ICE Changed", Toast.LENGTH_LONG)
+                .show();
     }
     private void updateProfile(String name, String mobile, Context context) {
+        showProgress();
         mAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
                 .build())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        hideProgress();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "User profile updated.");
+                            Toast.makeText(mContext, "User profile updated", Toast.LENGTH_LONG)
+                                    .show();
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        hideProgress();
                     }
                 });
     }
@@ -252,7 +265,7 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if(validateChangePasswordForm(etCurrentPassword.getText().toString(), etNewPassword.getText().toString(), etNewConfirmPassword.getText().toString(), context)){
-                        updatePassword(tvEmail.getText().toString());
+                        updatePassword(etNewPassword.getText().toString());
                         alertDialog.dismiss();
                     }
                 }
@@ -330,9 +343,11 @@ public class SettingsActivity extends AppCompatActivity {
 
             final EditText et_name = promptsView.findViewById(R.id.et_name);
             final EditText et_mobile_number = promptsView.findViewById(R.id.et_mobile_number);
+            if(mAuth!=null)
+            et_name.setText(mAuth.getCurrentUser().getDisplayName());
 
-            final Button   btnCancel = promptsView.findViewById(R.id.btn_cancel);
-            final Button   btnConfirm = promptsView.findViewById(R.id.btn_confirm);
+            final Button  btnCancel = promptsView.findViewById(R.id.btn_cancel);
+            final Button  btnConfirm = promptsView.findViewById(R.id.btn_confirm);
 
             final android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
             alertDialogBuilder.setCancelable(true);
