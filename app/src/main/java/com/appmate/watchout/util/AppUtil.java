@@ -22,6 +22,8 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.LocationSettingsRequest;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -194,4 +196,59 @@ public class AppUtil {
         }
         return strAdd;
     }
+
+
+
+    /*Fused Location API Implementation*/
+    /*Continuous Location Information*/
+//    private void continuousLocationUpdates() {
+//        try {
+//            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+//            builder.addLocationRequest(mLocationRequest);
+//            LocationSettingsRequest locationSettingsRequest = builder.build();
+//            // check devices settings before request location updates.
+//            settingsClient.checkLocationSettings(locationSettingsRequest)
+//                    .addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+//                        @Override
+//                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+//                            Log.i(TAG, "check location settings success");
+//                            // request location updates
+//                            fusedLocationProviderClient
+//                                    .requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper())
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            Toast.makeText(MainActivity.this, "requestLocationUpdatesWithCallback onSuccess", Toast.LENGTH_LONG).show();
+//                                        }
+//                                    })
+//                                    .addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(Exception e) {
+//
+//                                            Toast.makeText(MainActivity.this, "requestLocationUpdatesWithCallback onFailure:" + e.getMessage(), Toast.LENGTH_LONG).show();
+//                                        }
+//                                    });
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(Exception e) {
+//                            Toast.makeText(MainActivity.this, "checkLocationSetting onFailure:" + e.getMessage(), Toast.LENGTH_LONG).show();
+//                            int statusCode = ((ApiException) e).getStatusCode();
+//                            switch (statusCode) {
+//                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+//                                    try {
+//                                        ResolvableApiException rae = (ResolvableApiException) e;
+//                                        rae.startResolutionForResult(MainActivity.this, 0);
+//                                    } catch (IntentSender.SendIntentException sie) {
+//                                        Log.e(TAG, "PendingIntent unable to execute request.");
+//                                    }
+//                                    break;
+//                            }
+//                        }
+//                    });
+//        } catch (Exception e) {
+//            Log.e(TAG, "requestLocationUpdatesWithCallback exception:" + e.getMessage());
+//        }
+//    }
 }

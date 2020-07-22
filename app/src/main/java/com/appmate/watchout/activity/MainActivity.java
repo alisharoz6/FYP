@@ -32,8 +32,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import io.opencensus.tags.Tag;
-
 import static com.appmate.watchout.activity.SplashActivity.logoutUser;
 import static com.appmate.watchout.activity.SplashActivity.mAuth;
 import static com.appmate.watchout.util.AppUtil.hasPermissions;
@@ -127,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
     public void setupMenu(){
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvEmail);
-        tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
-        tvEmail.setText(mAuth.getCurrentUser().getEmail());
+        if(mAuth!=null){
+            tvUsername.setText(mAuth.getCurrentUser().getDisplayName());
+            tvEmail.setText(mAuth.getCurrentUser().getEmail());
+        }
 
         btnMenuHome = findViewById(R.id.btnMenuHome);
         btnMenuHome.setOnClickListener(new View.OnClickListener() {

@@ -534,13 +534,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", createImageFile("JPEG_", ".jpg")));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(PostActivity.this, BuildConfig.APPLICATION_ID + ".provider", createImageFile("JPEG_", ".jpg")));
         startActivityForResult(intent, IMAGE_REQUEST_CODE);
     }
 
     private void captureVideo() {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", createVideoFile("MP4_", ".mp4")));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(PostActivity.this, BuildConfig.APPLICATION_ID + ".provider", createVideoFile("MP4_", ".mp4")));
         startActivityForResult(intent, VIDEO_REQUEST_CODE);
     }
 

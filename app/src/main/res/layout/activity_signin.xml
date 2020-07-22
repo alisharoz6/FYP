@@ -27,7 +27,7 @@
                     android:id="@+id/splashScreen"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="@dimen/_100sdp"
-                    android:padding="@dimen/_15sdp"
+                    android:contentDescription="TODO" android:padding="@dimen/_15sdp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_add_alert_black_24dp"
                     android:background="@drawable/round_background"

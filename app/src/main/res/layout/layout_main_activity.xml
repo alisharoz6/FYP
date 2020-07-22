@@ -20,7 +20,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="30dp"
+                android:contentDescription="TODO" android:padding="30dp"
                 android:src="@drawable/ic_add_alert_black_24dp" />
         </LinearLayout>
 

@@ -72,7 +72,7 @@
                                 android:textColorHint="#000"
                                 android:textAlignment="center"
                                 android:background="@drawable/round_edges_white"
-                                android:singleLine="true"
+                                android:inputType="" android:singleLine="true"
                                 android:imeOptions="actionNext"
                                 android:hint="Enter full name"/>
 
