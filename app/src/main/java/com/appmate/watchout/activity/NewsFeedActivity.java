@@ -127,7 +127,9 @@ public class NewsFeedActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         ArrayList<HashMap<String , Data>> data = (ArrayList<HashMap<String , Data>>) documentSnapshot.get("posts");
-                        mapDataToModel(data);
+                        if(data!=null && data.size()>0){
+                            mapDataToModel(data);
+                        }
                         Toast.makeText(NewsFeedActivity.this, "Data Loaded!",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -287,6 +289,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.btn_location).setVisibility(View.GONE);
         activityTitle = findViewById(R.id.tv_bar_title);
         activityTitle.setText("News Feed");
     }
@@ -332,7 +335,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser();
+                logoutUser(mContext);
                 NewsFeedActivity.this.startActivity(new Intent(NewsFeedActivity.this, SignInActivity.class));
                 finish();
             }

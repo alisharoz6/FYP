@@ -467,6 +467,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+        findViewById(R.id.btn_location).setVisibility(View.GONE);
         activityTitle = findViewById(R.id.tv_bar_title);
         activityTitle.setText("Add Post");
     }
@@ -512,7 +513,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser();
+                logoutUser(mContext );
                 PostActivity.this.startActivity(new Intent(PostActivity.this, SignInActivity.class));
                 finish();
             }

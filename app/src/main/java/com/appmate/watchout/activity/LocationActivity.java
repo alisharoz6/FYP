@@ -147,6 +147,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
                 }
             }
         });
+        findViewById(R.id.btn_location).setVisibility(View.GONE);
         activityTitle = findViewById(R.id.tv_bar_title);
         activityTitle.setText("Choose Location");
     }
@@ -191,7 +192,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser();
+                logoutUser(mContext);
                 LocationActivity.this.startActivity(new Intent(LocationActivity.this, SignInActivity.class));
                 finish();
             }

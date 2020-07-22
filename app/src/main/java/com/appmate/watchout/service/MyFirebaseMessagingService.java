@@ -29,8 +29,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Random;
 
-import static com.appmate.watchout.activity.SplashActivity.mAuth;
-import static com.appmate.watchout.util.Constants.currentLocation;
+    import static com.appmate.watchout.util.Constants.currentLocation;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -39,11 +38,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         /*Check Notification Creator*/
+        Log.d("onMessageReceived" , "START");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Location oldLocation = null;
         if(remoteMessage==null || remoteMessage.getData()==null){
             return;
         }
-        if(remoteMessage.getData().get("createdBy").equalsIgnoreCase(mAuth.getCurrentUser().getUid())){
+        if(remoteMessage.getData().get("createdBy").equalsIgnoreCase(preferences.getString("uuid", ""))){
             Log.d("onMessageReceived" , "Created By Creator");
             return;
         }
@@ -56,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             double lng= Double.parseDouble(remoteMessage.getData().get("lng"));
             oldLocation = new Location(lat,lng);
         }
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         if(preferences!=null && !preferences.getString("myLat", "").isEmpty() && !preferences.getString("myLng", "").isEmpty()){
             Location currentLoc = new Location(Double.valueOf(preferences.getString("myLat", "")) , Double.valueOf(preferences.getString("myLng", "")) );
             System.out.println("currentLoc == "+currentLoc);
@@ -64,6 +65,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if(oldLocation==null || currentLoc==null || !AppUtil.checkLocationWithInRadius(oldLocation,currentLoc)){
                 return;
             }
+        }
+        else{
+            return;
         }
 
         System.out.println("currentLocation == "+currentLocation);

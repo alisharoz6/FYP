@@ -77,6 +77,7 @@ public class HelpContactActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.btn_location).setVisibility(View.GONE);
         activityTitle = findViewById(R.id.tv_bar_title);
         activityTitle.setText("Help/About Us");
     }
@@ -123,7 +124,7 @@ public class HelpContactActivity extends AppCompatActivity {
         btnMenuLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logoutUser();
+                logoutUser(mContext);
                 HelpContactActivity.this.startActivity(new Intent(HelpContactActivity.this, SignInActivity.class));
                 finish();
             }

@@ -1,9 +1,12 @@
 package com.appmate.watchout.activity;
 
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -115,9 +118,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    public static void logoutUser(){
+    public static void logoutUser(Context mCont){
         unSubscribeFirebaseTopic();
         FirebaseAuth.getInstance().signOut();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mCont);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("uuid", "");
+        editor.commit();
     }
 
 
