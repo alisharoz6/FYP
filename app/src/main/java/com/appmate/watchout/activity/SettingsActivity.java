@@ -187,10 +187,10 @@ public class SettingsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 hideProgress();
                 if (task.isSuccessful()) {
-                    Toast.makeText(mContext, "Password changes successfully", Toast.LENGTH_LONG)
+                        Toast.makeText(mContext, "Password changes successfully", Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    Toast.makeText(mContext, "password not changed", Toast.LENGTH_LONG)
+                    Toast.makeText(mContext, "Password not changed", Toast.LENGTH_LONG)
                             .show();
                 }
             }

@@ -133,7 +133,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 hideProgress();
-                Toast.makeText(mContext, "Error Occurred.",
+                Toast.makeText(mContext, "The password is invalid or the user does not have a password.",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -170,7 +170,7 @@ public class SignInActivity extends AppCompatActivity {
             View promptsView  = null;
             promptsView  = li.inflate(R.layout.dialog_forgot_password, null);
 
-            final TextView tvEmail = promptsView.findViewById(R.id.tv_email);
+            final EditText tvEmail = promptsView.findViewById(R.id.tv_email);
             Button btnReset = promptsView.findViewById(R.id.btn_reset);
 
             final android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
